@@ -119,3 +119,7 @@ venv.bak/
 
 # MacOS
 .DS_Store
+
+# sipam-tracking module
+sipam-tracking/in/
+sipam-tracking/out/
