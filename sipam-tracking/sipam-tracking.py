@@ -13,7 +13,7 @@ from tathu.tracking import trackers
 from tathu.utils import array2raster, file2timestamp, extractPeriods, Timer
 from tathu.constants import KM_PER_DEGREE
 
-from read_sipam_cappis import read_sipam_cappi
+from read_sipam_cappis_cptec import read_simple_cappi
 
 
 def get_files(filepath):
@@ -24,35 +24,65 @@ def get_files(filepath):
 
 
 def read_data(path, level, is_small_coverage):
-    """Reading radar data (specifically SIPAM CAPPIs)"""
+    """Reading radar data (specifically CPTEC SIPAM CAPPIs)"""
 
     print("Reading data")
-    cappi = read_sipam_cappi(path)
+    cappi, coords = read_simple_cappi(path, "/".join(path.split("/")[:-3]))
     if is_small_coverage:
         # Considering small coverage as 150 x 150 km from 240 x 240 km
         subset = slice(45, -45)
         # Define data extent
         extent = [
-            cappi.get_point_longitude_latitude()[0][subset, subset].min(),
-            cappi.get_point_longitude_latitude()[1][subset, subset].min(),
-            cappi.get_point_longitude_latitude()[0][subset, subset].max(),
-            cappi.get_point_longitude_latitude()[1][subset, subset].max(),
+            coords[0][subset, subset].min(),
+            coords[1][subset, subset].min(),
+            coords[0][subset, subset].max(),
+            coords[1][subset, subset].max(),
         ]
-        array = np.flipud(
-            np.ma.filled(cappi.fields["DBZc"]["data"][level][subset, subset], -999)
-        )
+        array = np.flipud(cappi[level][subset, subset])
     else:
         # Define data extent
         # extent = [0.0, 0.0, 200.0, 200.0] # Un-geolocated
         extent = [
-            cappi.get_point_longitude_latitude()[0].min(),
-            cappi.get_point_longitude_latitude()[1].min(),
-            cappi.get_point_longitude_latitude()[0].max(),
-            cappi.get_point_longitude_latitude()[1].max(),
+            coords[0].min(),
+            coords[1].min(),
+            coords[0].max(),
+            coords[1].max(),
         ]
-        array = np.flipud(np.ma.filled(cappi.fields["DBZc"]["data"][level], -999))
+        array = np.flipud(cappi[level])
     # return array2raster(array, extent, nodata=0)
-    return array2raster(array, extent, nodata=-999), extent
+    return array2raster(array, extent, nodata=-99.), extent
+
+
+# def read_data(path, level, is_small_coverage):
+#     """Reading radar data (specifically ARM SIPAM CAPPIs)"""
+
+#     print("Reading data")
+#     cappi = read_sipam_cappi(path)
+#     if is_small_coverage:
+#         # Considering small coverage as 150 x 150 km from 240 x 240 km
+#         subset = slice(45, -45)
+#         # Define data extent
+#         extent = [
+#             cappi.get_point_longitude_latitude()[0][subset, subset].min(),
+#             cappi.get_point_longitude_latitude()[1][subset, subset].min(),
+#             cappi.get_point_longitude_latitude()[0][subset, subset].max(),
+#             cappi.get_point_longitude_latitude()[1][subset, subset].max(),
+#         ]
+#         array = np.flipud(
+#             np.ma.filled(cappi.fields["DBZc"]["data"][level][subset, subset], -999)
+#         )
+#     else:
+#         # Define data extent
+#         # extent = [0.0, 0.0, 200.0, 200.0] # Un-geolocated
+#         extent = [
+#             cappi.get_point_longitude_latitude()[0].min(),
+#             cappi.get_point_longitude_latitude()[1].min(),
+#             cappi.get_point_longitude_latitude()[0].max(),
+#             cappi.get_point_longitude_latitude()[1].max(),
+#         ]
+#         array = np.flipud(np.ma.filled(cappi.fields["DBZc"]["data"][level], -999))
+#     # return array2raster(array, extent, nodata=0)
+#     return array2raster(array, extent, nodata=-999), extent
 
 
 def detect(
@@ -122,17 +152,13 @@ def detect(
         # Create statistical descriptor
         if not is_multi_threshold:
             # Single threshold
-            descriptor = descriptors.StatisticalDescriptor(stats=stats, rasterOut=True)
+            descriptor = descriptors.DBZStatisticalDescriptor(stats=stats, rasterOut=True)
         else:
-            # Multi-threshold
-            descriptor = descriptors.StatisticalDescriptor(stats=stats, rasterOut=True)
+            # Multi-threshold, remove nlayers
+            descriptor = descriptors.DBZStatisticalDescriptor(stats=stats[:-1], rasterOut=True)
 
         # Describe systems (stats)
         descriptor.describe(grid, systems)
-
-        # Add normalized area expansion attribute
-        for s in systems:
-            s.attrs['nae'] = 0
 
         grid = None
 
@@ -215,7 +241,7 @@ def track(
 
 # Read config file and extract infos
 params = configparser.ConfigParser(interpolation=None)
-params.read("/home/camila/git/tathu/sipam-tracking/config_sipam.ini")
+params.read("/home/camilacl/git/tathu/sipam-tracking/config_sipam.ini")
 
 # Get input data parameters
 data_in = params.get("input", "data_in")
