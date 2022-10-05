@@ -29,24 +29,24 @@ def read_data(path, level, is_small_coverage):
     print("Reading data")
     cappi, coords = read_simple_cappi(path, "/".join(path.split("/")[:-3]))
     if is_small_coverage:
-        # Considering small coverage as 150 x 150 km from 240 x 240 km
-        subset = slice(45, -45)
+        # Considering small coverage as 150 x 150 km from 250 x 250 km
+        subset = slice(100, -100)  # slice(50, -50)
         # Define data extent
         extent = [
-            coords[0][subset, subset].min(),
-            coords[1][subset, subset].min(),
-            coords[0][subset, subset].max(),
-            coords[1][subset, subset].max(),
+            np.nanmin(coords[0][subset, subset]),
+            np.nanmin(coords[1][subset, subset]),
+            np.nanmax(coords[0][subset, subset]),
+            np.nanmax(coords[1][subset, subset]),
         ]
         array = np.flipud(cappi[level][subset, subset])
     else:
         # Define data extent
         # extent = [0.0, 0.0, 200.0, 200.0] # Un-geolocated
         extent = [
-            coords[0].min(),
-            coords[1].min(),
-            coords[0].max(),
-            coords[1].max(),
+            np.nanmin(coords[0]),
+            np.nanmin(coords[1]),
+            np.nanmax(coords[0]),
+            np.nanmax(coords[1]),
         ]
         array = np.flipud(cappi[level])
     # return array2raster(array, extent, nodata=0)

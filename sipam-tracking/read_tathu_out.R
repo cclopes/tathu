@@ -178,55 +178,55 @@ save_plot(
 )
 
 # Trajectories
-# plt <- ggplot(geoms) +
-#   # geom_sf(
-#   #   data = cities,
-#   #   fill = NA,
-#   #   size = 0.4,
-#   #   color = "gray"
-#   # ) +
-#   geom_sf(
-#     data = rivers,
-#     fill = NA,
-#     size = 0.4,
-#     color = "lightblue"
-#   ) +
-#   geom_rect(
-#     aes(
-#       xmin = -61.343496,
-#       xmax = -58.640505,
-#       ymin = -4.505793,
-#       ymax = -1.792021
-#     ),
-#     fill = NA,
-#     color = "black"
-#   ) +
-#   geom_sf(
-#     data = geoms,
-#     aes(color = name),
-#     fill = NA,
-#     size = 0.5,
-#     show.legend = F
-#   ) +
-#   # geom_sf(
-#   #   data = centroids,
-#   #   aes(color = name),
-#   #   fill = NA,
-#   #   show.legend = F
-#   # ) +
-#   coord_sf(
-#     xlim = c(-61.343496, -58.640505),
-#     ylim = c(-4.505793, -1.792021),
-#     expand = T
-#   ) +
-#   facet_wrap(vars(as.character(timestamp)), nrow = 5)
-# ggsave(
-#   plot = plt,
-#   filename = "out/figs/test_dry_season_overlap.png",
-#   width = 18,
-#   height = 10,
-#   dpi = 300
-# )
+plt <- ggplot(geoms) +
+  # geom_sf(
+  #   data = cities,
+  #   fill = NA,
+  #   size = 0.4,
+  #   color = "gray"
+  # ) +
+  geom_sf(
+    data = rivers,
+    fill = NA,
+    size = 0.4,
+    color = "lightblue"
+  ) +
+  geom_rect(
+    aes(
+      xmin = -61.343496,
+      xmax = -58.640505,
+      ymin = -4.505793,
+      ymax = -1.792021
+    ),
+    fill = NA,
+    color = "black"
+  ) +
+  geom_sf(
+    data = geoms,
+    aes(color = name),
+    fill = NA,
+    size = 0.5,
+    show.legend = F
+  ) +
+  # geom_sf(
+  #   data = centroids,
+  #   aes(color = name),
+  #   fill = NA,
+  #   show.legend = F
+  # ) +
+  coord_sf(
+    xlim = c(-61.343496, -58.640505),
+    ylim = c(-4.505793, -1.792021),
+    expand = T
+  ) +
+  facet_wrap(vars(as.character(timestamp)), nrow = 5)
+ggsave(
+  plot = plt,
+  filename = "out/figs/test_dry_season_overlap.png",
+  width = 18,
+  height = 10,
+  dpi = 300
+)
 
 # New centroids + geoms + GoAmazon sites
 ggplot() +
@@ -252,7 +252,7 @@ ggplot() +
     fill = NA,
     color = "black"
   ) +
-  geom_path(data = goam_circles_50,
+  geom_path(data = goam_circles_50 %>% filter(id == "T3"),
             aes(lon, lat, group = id, color = id),
             size = 0.5) +
   geom_sf(
@@ -268,7 +268,7 @@ ggplot() +
   #   show.legend = F
   # ) +
   geom_point(
-    data = goam_sites,
+    data = goam_sites %>% filter(goamazon_reference == "T3"),
     aes(longitude, latitude, color = goamazon_reference),
     shape = 16,
     size = 2,
@@ -301,7 +301,7 @@ ggsave(
   bg = "transparent"
 )
 
-
+#-------------------------------------------------------------------------------
 # DRY-TO-WET SEASON
 # Reading data
 test_drytowet_season <-
@@ -408,55 +408,55 @@ save_plot(
 )
 
 # Trajectories
-# plt <- ggplot(geoms) +
-#   # geom_sf(
-#   #   data = cities,
-#   #   fill = NA,
-#   #   size = 0.4,
-#   #   color = "gray"
-#   # ) +
-#   geom_sf(
-#     data = rivers,
-#     fill = NA,
-#     size = 0.4,
-#     color = "lightblue"
-#   ) +
-#   geom_rect(
-#     aes(
-#       xmin = -61.343496,
-#       xmax = -58.640505,
-#       ymin = -4.505793,
-#       ymax = -1.792021
-#     ),
-#     fill = NA,
-#     color = "black"
-#   ) +
-#   geom_sf(
-#     data = geoms,
-#     aes(color = name),
-#     fill = NA,
-#     size = 0.5,
-#     show.legend = F
-#   ) +
-#   # geom_sf(
-#   #   data = centroids,
-#   #   aes(color = name),
-#   #   fill = NA,
-#   #   show.legend = F
-#   # ) +
-#   coord_sf(
-#     xlim = c(-61.343496, -58.640505),
-#     ylim = c(-4.505793, -1.792021),
-#     expand = T
-#   ) +
-#   facet_wrap(vars(as.character(timestamp)), nrow = 5)
-# ggsave(
-#   plot = plt,
-#   filename = "out/figs/test_drytowet_season_overlap.png",
-#   width = 18,
-#   height = 10,
-#   dpi = 300
-# )
+plt <- ggplot(geoms) +
+  # geom_sf(
+  #   data = cities,
+  #   fill = NA,
+  #   size = 0.4,
+  #   color = "gray"
+  # ) +
+  geom_sf(
+    data = rivers,
+    fill = NA,
+    size = 0.4,
+    color = "lightblue"
+  ) +
+  geom_rect(
+    aes(
+      xmin = -61.343496,
+      xmax = -58.640505,
+      ymin = -4.505793,
+      ymax = -1.792021
+    ),
+    fill = NA,
+    color = "black"
+  ) +
+  geom_sf(
+    data = geoms,
+    aes(color = name),
+    fill = NA,
+    size = 0.5,
+    show.legend = F
+  ) +
+  # geom_sf(
+  #   data = centroids,
+  #   aes(color = name),
+  #   fill = NA,
+  #   show.legend = F
+  # ) +
+  coord_sf(
+    xlim = c(-61.343496, -58.640505),
+    ylim = c(-4.505793, -1.792021),
+    expand = T
+  ) +
+  facet_wrap(vars(as.character(timestamp)), nrow = 5)
+ggsave(
+  plot = plt,
+  filename = "out/figs/test_drytowet_season_overlap.png",
+  width = 18,
+  height = 10,
+  dpi = 300
+)
 
 # New centroids + geoms + GoAmazon sites
 ggplot() +
@@ -482,7 +482,7 @@ ggplot() +
     fill = NA,
     color = "black"
   ) +
-  geom_path(data = goam_circles_50,
+  geom_path(data = goam_circles_50 %>% filter(id == "T3"),
             aes(lon, lat, group = id, color = id),
             size = 0.5) +
   geom_sf(
@@ -498,7 +498,7 @@ ggplot() +
   #   show.legend = F
   # ) +
   geom_point(
-    data = goam_sites,
+    data = goam_sites %>% filter(goamazon_reference == "T3"),
     aes(longitude, latitude, color = goamazon_reference),
     shape = 16,
     size = 2,
@@ -531,7 +531,7 @@ ggsave(
   bg = "transparent"
 )
 
-
+#-------------------------------------------------------------------------------
 # WET SEASON
 # Reading data
 test_wet_season <- read_csv("out/test_wet_season_filter.csv",
@@ -637,55 +637,55 @@ save_plot(
 )
 
 # Trajectories
-# plt <- ggplot(geoms) +
-#   # geom_sf(
-#   #   data = cities,
-#   #   fill = NA,
-#   #   size = 0.4,
-#   #   color = "gray"
-#   # ) +
-#   geom_sf(
-#     data = rivers,
-#     fill = NA,
-#     size = 0.4,
-#     color = "lightblue"
-#   ) +
-#   geom_rect(
-#     aes(
-#       xmin = -61.343496,
-#       xmax = -58.640505,
-#       ymin = -4.505793,
-#       ymax = -1.792021
-#     ),
-#     fill = NA,
-#     color = "black"
-#   ) +
-#   geom_sf(
-#     data = geoms,
-#     aes(color = name),
-#     fill = NA,
-#     size = 0.5,
-#     show.legend = F
-#   ) +
-#   # geom_sf(
-#   #   data = centroids,
-#   #   aes(color = name),
-#   #   fill = NA,
-#   #   show.legend = F
-#   # ) +
-#   coord_sf(
-#     xlim = c(-61.343496, -58.640505),
-#     ylim = c(-4.505793, -1.792021),
-#     expand = T
-#   ) +
-#   facet_wrap(vars(as.character(timestamp)), nrow = 5)
-# ggsave(
-#   plot = plt,
-#   filename = "out/figs/test_wet_season_overlap.png",
-#   width = 18,
-#   height = 10,
-#   dpi = 300
-# )
+plt <- ggplot(geoms) +
+  # geom_sf(
+  #   data = cities,
+  #   fill = NA,
+  #   size = 0.4,
+  #   color = "gray"
+  # ) +
+  geom_sf(
+    data = rivers,
+    fill = NA,
+    size = 0.4,
+    color = "lightblue"
+  ) +
+  geom_rect(
+    aes(
+      xmin = -61.343496,
+      xmax = -58.640505,
+      ymin = -4.505793,
+      ymax = -1.792021
+    ),
+    fill = NA,
+    color = "black"
+  ) +
+  geom_sf(
+    data = geoms,
+    aes(color = name),
+    fill = NA,
+    size = 0.5,
+    show.legend = F
+  ) +
+  # geom_sf(
+  #   data = centroids,
+  #   aes(color = name),
+  #   fill = NA,
+  #   show.legend = F
+  # ) +
+  coord_sf(
+    xlim = c(-61.343496, -58.640505),
+    ylim = c(-4.505793, -1.792021),
+    expand = T
+  ) +
+  facet_wrap(vars(as.character(timestamp)), nrow = 5)
+ggsave(
+  plot = plt,
+  filename = "out/figs/test_wet_season_overlap.png",
+  width = 18,
+  height = 10,
+  dpi = 300
+)
 
 
 # New centroids + geoms + GoAmazon sites
@@ -712,7 +712,7 @@ ggplot() +
     fill = NA,
     color = "black"
   ) +
-  geom_path(data = goam_circles_50,
+  geom_path(data = goam_circles_50 %>% filter(id == "T3"),
             aes(lon, lat, group = id, color = id),
             size = 0.5) +
   geom_sf(
@@ -728,7 +728,7 @@ ggplot() +
   #   show.legend = F
   # ) +
   geom_point(
-    data = goam_sites,
+    data = goam_sites %>% filter(goamazon_reference == "T3"),
     aes(longitude, latitude, color = goamazon_reference),
     shape = 16,
     size = 2,
@@ -760,3 +760,4 @@ ggsave(
   dpi = 300,
   bg = "transparent"
 )
+
