@@ -77,7 +77,7 @@ theme_update(
 # Reading data
 test_dry_season <- read_csv("out/test_dry_season_filter.csv",
                             col_types = cols(timestamp = col_datetime(format = "%Y-%m-%d %H:%M:%S"))) %>%
-  mutate(count = count * 4, event = str_replace(event, "_", "\n"))
+  mutate(count = count, event = str_replace(event, "_", "\n")) # count * 4 for 2-km res
 test_dry_season_sums <- test_dry_season %>%
   group_by(name) %>%
   summarize(duration = difftime(max(timestamp), min(timestamp), units = "mins"),
@@ -307,7 +307,7 @@ ggsave(
 test_drytowet_season <-
   read_csv("out/test_drytowet_season_filter.csv",
            col_types = cols(timestamp = col_datetime(format = "%Y-%m-%d %H:%M:%S"))) %>%
-  mutate(count = count * 4, event = str_replace(event, "_", "\n"))
+  mutate(count = count, event = str_replace(event, "_", "\n")) # count * 4 for 2-km res
 test_drytowet_season_sums <- test_drytowet_season %>%
   group_by(name) %>%
   summarize(duration = difftime(max(timestamp), min(timestamp), units = "mins"),
@@ -536,7 +536,7 @@ ggsave(
 # Reading data
 test_wet_season <- read_csv("out/test_wet_season_filter.csv",
                             col_types = cols(timestamp = col_datetime(format = "%Y-%m-%d %H:%M:%S"))) %>%
-  mutate(count = count * 4, event = str_replace(event, "_", "\n"))
+  mutate(count = count, event = str_replace(event, "_", "\n")) # count * 4 for 2-km res
 test_wet_season_sums <- test_wet_season %>%
   group_by(name) %>%
   summarize(duration = difftime(max(timestamp), min(timestamp), units = "mins"),

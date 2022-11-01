@@ -52,7 +52,7 @@ def get_radar_grid_extent(path, level, is_small_coverage):
             np.nanmax(coords[0][subset, subset]),
             np.nanmax(coords[1][subset, subset]),
         ]
-        array = np.flipud(cappi[level][subset, subset])
+        array = np.flipud(cappi[level])[subset, subset]
     else:
         # Define data extent
         # extent = [0.0, 0.0, 200.0, 200.0] # Un-geolocated
