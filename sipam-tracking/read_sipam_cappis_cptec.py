@@ -12,6 +12,7 @@ Adapted from pyart.io.read_grid source code
 
 from datetime import datetime
 import re
+import gzip
 
 import numpy as np
 
@@ -21,8 +22,8 @@ import numpy as np
 def read_simple_cappi(filename, latlon_path):
     """
     Reading binary CAPPI grids produced by CPTEC.
-    Converts to 1 x 2 x 2 km and apply TRMM bias correction of Schumacher and
-    Funk (2018) (available at: https://iop.archive.arm.gov/arm-iop-file/2014/mao/goamazon/T1/schumacher-sband_rr/SIPAM_Manaus_S_band_README_v2.0.txt)
+    Apply TRMM bias correction of Schumacher and Funk (2018)
+    (available at: https://iop.archive.arm.gov/arm-iop-file/2014/mao/goamazon/T1/schumacher-sband_rr/SIPAM_Manaus_S_band_README_v2.0.txt)
 
     Parameters
     filename: path + name of file
@@ -34,7 +35,15 @@ def read_simple_cappi(filename, latlon_path):
     """
 
     # Reading data
-    cappis = np.fromfile(filename, dtype="float32").reshape(15, 500, 500)[:, ::2, ::2]
+    if filename.split(".")[-1] == "gz":
+        with gzip.open(filename) as fl:
+            cappis = np.frombuffer(fl.read(), dtype="float32").copy().reshape(
+                15, 500, 500
+            )  # [:, ::2, ::2]
+    else:
+        cappis = np.fromfile(filename, dtype="float32").reshape(
+            15, 500, 500
+        )  # [:, ::2, ::2]
 
     # Apply bias correction
     start_date = [
@@ -67,10 +76,10 @@ def read_simple_cappi(filename, latlon_path):
     # Reading lat/lon files
     lon_grid = np.fromfile(latlon_path + "/lon_SBMN_500.txt", sep="   ").reshape(
         500, 500
-    )[::2, ::2]
+    )  # [::2, ::2]
     lat_grid = np.fromfile(latlon_path + "/lat_SBMN_500.txt", sep="   ").reshape(
         500, 500
-    )[::2, ::2]
+    )  # [::2, ::2]
     return cappis, [lon_grid, lat_grid]
 
 
