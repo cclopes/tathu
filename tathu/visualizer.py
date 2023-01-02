@@ -51,6 +51,11 @@ class MapView(object):
         array = np.ma.masked_equal(image.ReadAsArray(), nodata)
         self.plotArray(array, cmap, vmin, vmax, colorbar)
 
+    def plotRaster(self, raster, cmap=None, vmin=None, vmax=None, colorbar=False):
+        nodata = raster.GetRasterBand(1).GetNoDataValue()
+        array = np.ma.masked_equal(raster.ReadAsArray(), nodata)
+        self.plotArray(array, cmap, vmin, vmax, colorbar)
+
     def plotArray(self, array, cmap=None, vmin=None, vmax=None, colorbar=False):
         im = self.ax.imshow(array, transform=self.crs, cmap=cmap, vmin=vmin, vmax=vmax, extent=self.extent)
         if colorbar:
@@ -58,9 +63,9 @@ class MapView(object):
 
     def plotSystems(self, systems, facecolor='red', alpha=1.0, edgecolor='k', lw=1.0, centroids=False):
         polygons = [s.geom for s in systems]
-        self.plotPolygons(polygons, facecolor, alpha, edgecolor, lw, centroids)
+        self.plotPolygons(polygons, facecolor, edgecolor, alpha, lw, centroids)
 
-    def plotPolygons(self, polygons, facecolor='red', alpha=1.0, edgecolor='k', lw=1.0, centroids=False):
+    def plotPolygons(self, polygons, facecolor='red', edgecolor='k', alpha=1.0, lw=1.0, centroids=False):
         # Centroid coordinates
         x, y = [], []
         for p in polygons:
@@ -77,7 +82,7 @@ class MapView(object):
             self.__plotPolygon(lats, lons, facecolor, alpha, lw, edgecolor)
 
         # Show centroids
-        self.ax.scatter(x, y, marker='.', color='b')
+        self.ax.scatter(x, y, marker='o', facecolor=facecolor, edgecolor=edgecolor, alpha=alpha)
 
     def __plotPolygon(self, lats, lons, facecolor, alpha, lw, edgecolor):
         xy = list(zip(lons, lats))
