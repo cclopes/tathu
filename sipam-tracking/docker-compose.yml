@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  postgis:
+    image: postgis/postgis:15-3.3
+    container_name: goamazon-db
+    ports:
+        - 5432:5432
+    volumes:
+        - ./data:/data/postgres
+    environment:
+        POSTGRES_DB: goamazon_geo
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        PGDATA: /data/postgres

@@ -6,7 +6,7 @@ import configparser
 import sys
 import numpy as np
 
-from tathu.io import icsv, spatialite
+from tathu.io import icsv, spatialite, pgis
 from tathu.tracking import descriptors
 from tathu.tracking import detectors
 from tathu.tracking import trackers
@@ -50,7 +50,7 @@ def read_data(path, level, is_small_coverage):
         ]
         array = np.flipud(cappi[level])
     # return array2raster(array, extent, nodata=0)
-    return array2raster(array, extent, nodata=-99.), extent
+    return array2raster(array, extent, nodata=-99.0), extent
 
 
 # def read_data(path, level, is_small_coverage):
@@ -152,10 +152,14 @@ def detect(
         # Create statistical descriptor
         if not is_multi_threshold:
             # Single threshold
-            descriptor = descriptors.DBZStatisticalDescriptor(stats=stats, rasterOut=True)
+            descriptor = descriptors.DBZStatisticalDescriptor(
+                stats=stats, rasterOut=True
+            )
         else:
             # Multi-threshold, remove nlayers
-            descriptor = descriptors.DBZStatisticalDescriptor(stats=stats[:-1], rasterOut=True)
+            descriptor = descriptors.DBZStatisticalDescriptor(
+                stats=stats[:-1], rasterOut=True
+            )
 
         # Describe systems (stats)
         descriptor.describe(grid, systems)
@@ -258,7 +262,9 @@ threshold_2 = float(params.get("tracking_parameters", "threshold_2"))
 minarea = float(params.get("tracking_parameters", "minarea"))
 minarea_2 = float(params.get("tracking_parameters", "minarea_2"))
 areaoverlap = float(params.get("tracking_parameters", "areaoverlap"))
-stats = [i.strip() for i in params.get("tracking_parameters", "stats").split(",")]
+stats = [
+    i.strip() for i in params.get("tracking_parameters", "stats").split(",")
+]
 
 # Output
 database = params.get("output", "data_out")
@@ -280,7 +286,9 @@ print(":: Config tracking file location:", "sipam_tracking/config_sipam.ini")
 print(":: Filepaths:", data_in)
 print(":: Date Regex:", date_regex)
 print(":: Date Format:", date_format)
-print(":: Minimum accepted time interval between two images:", timeout, "minutes")
+print(
+    ":: Minimum accepted time interval between two images:", timeout, "minutes"
+)
 print(":: Is multi threshold:", is_multi_threshold)
 print(":: Reflectivity threshold:", threshold, ", ", threshold_2, "dBZ")
 print(":: Minimum area of systems:", minarea, ", ", minarea_2, "km2")
@@ -294,10 +302,22 @@ print(periods)
 # Export results
 if type_database == "csv":
     db = icsv.Outputter(
-        database + ".csv", writeHeader=True, outputGeom=True, outputCentroid=True
+        database + ".csv",
+        writeHeader=True,
+        outputGeom=True,
+        outputCentroid=True,
     )
 elif type_database == "sqlite":
     db = spatialite.Outputter(database + ".sqlite", "systems", stats)
+elif type_database == "postgis":
+    db = pgis.Outputter(
+        "localhost",
+        "goamazon_geo",
+        "postgres",
+        "postgres",
+        "systems",
+        stats,
+    )
 
 # Executing tracking
 for period in periods:

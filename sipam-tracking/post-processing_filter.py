@@ -7,11 +7,6 @@ import sys
 
 from tathu.io import spatialite, icsv
 
-# Setup SpatiaLite extension
-# os.environ["PATH"] = (
-#     os.environ["PATH"] + ";../spatialite/mod_spatialite-4.3.0a-win-amd64"
-# )
-
 # Setup informations to load systems from database
 dbname = "/home/camilacl/git/tathu/sipam-tracking/out/test_dry_season.sqlite"
 table = "systems"
