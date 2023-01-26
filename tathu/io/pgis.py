@@ -36,7 +36,7 @@ class Outputter(object):
     """
     This class can be used to export tracking results to Postgres/PostGIS Database.
     """
-    def __init__(self, host, database, user, pwd, table, attrs):
+    def __init__(self, host, database, user, pwd, table, attrs, outputRaster=True, raster2int=True):
         # Store parameters
         self.host = host
         self.database = database
@@ -44,6 +44,8 @@ class Outputter(object):
         self.password = pwd
         self.table = table
         self.attrs = attrs
+        self.outputRaster = outputRaster
+        self.raster2int = raster2int # Convert raster to int16 (disk-usage)?
 
         # Prepare connection
         self.conn = psycopg2.connect(host=host, database=database, user=user, password=pwd)
@@ -100,13 +102,18 @@ class Outputter(object):
 
     def __system2tuple(self, s):
         # Prepare raster data
-        nodata = s.nodata
-        raster = s.raster.filled(fill_value=nodata)
-
-        # Convert raster to int16 (disk-usage)
-        nodata = int(nodata * 100)
-        raster = raster * 100
-        raster = raster.astype(np.int16)
+        if self.outputRaster:
+            nodata = s.nodata
+            raster = s.raster.filled(fill_value=nodata)
+            # Convert if requested
+            if self.raster2int:
+                raster = np.ma.masked_where(raster == nodata, raster)
+                nodata = np.iinfo(np.int16).min
+                raster = raster * 100
+                raster = raster.filled(fill_value=nodata)
+                raster = raster.astype(np.int16)
+        else:
+            nodata, raster = 0, np.zeros((1,1))
 
         # Build system-tuple
         tuple = (str(s.name), s.timestamp)
@@ -215,8 +222,8 @@ class Loader(object):
                 # Apply mask
                 raster = np.ma.masked_where(raster == nodata, raster, False)
 
-                s.raster = raster
-                s.nodata = nodata
+                s.raster = raster/100
+                s.nodata = nodata/100
                 s.geotransform = row['geotransform']
 
                 s.relationships = row['relations']
@@ -260,8 +267,8 @@ class Loader(object):
                 # Apply mask
                 raster = np.ma.masked_where(raster == nodata, raster, False)
 
-                s.raster = raster
-                s.nodata = nodata
+                s.raster = raster/100
+                s.nodata = nodata/100
                 s.geotransform = row['geotransform']
 
                 s.relationships = row['relations']
@@ -270,5 +277,20 @@ class Loader(object):
 
                 return s
 
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+
+    def query(self, query):
+        try:
+            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+            cur.execute(query)
+
+            results = cur.fetchall()
+
+            cur.close()
+
+            return results
+            
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
