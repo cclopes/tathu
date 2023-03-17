@@ -126,3 +126,5 @@ sipam-tracking/out/
 sipam-tracking/renv/
 sipam-tracking/.Rprofile
 .Rproj.user
+sipam-tracking/.RData
+.gitignore
