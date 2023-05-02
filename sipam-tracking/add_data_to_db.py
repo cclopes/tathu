@@ -1,4 +1,4 @@
-#%%
+# %%
 import configparser
 import numpy as np
 from datetime import datetime
@@ -234,7 +234,7 @@ for d in dates:
         )
         db.conn.commit()
         cur.close()
-
+"""
 # Generating CFAD, VIL, VII columns
 for d in dates:
     # Radar data
@@ -272,8 +272,12 @@ for d in dates:
         # Applying mask to radar data
         masked_radar = [np.ma.masked_array(r, np.invert(mask)) for r in radar]
         # Resize the data for only valid rows/cols accoding to 3-km height
-        rows_del = [i for i, x in enumerate(masked_radar[1].mask.all(axis=1)) if x]
-        cols_del = [i for i, x in enumerate(masked_radar[1].mask.all(axis=0)) if x]
+        rows_del = [
+            i for i, x in enumerate(masked_radar[1].mask.all(axis=1)) if x
+        ]
+        cols_del = [
+            i for i, x in enumerate(masked_radar[1].mask.all(axis=0)) if x
+        ]
         # print(rows_del)
         # print(cols_del)
         for l in range(len(masked_radar)):
@@ -285,44 +289,62 @@ for d in dates:
             # plt.imshow(masked_radar[1])
             # plt.colorbar()
             # plt.show()
-        
+
         # z_freq array
-        z_freq = np.zeros((15, 10))
+        z_freq = np.zeros((15, 16))
 
         # VIL/VII arrays
-        vil = np.zeros(masked_radar[0].shape)
-        vii = np.zeros(masked_radar[0].shape)
+        # vil = np.zeros(masked_radar[0].shape)
+        # vii = np.zeros(masked_radar[0].shape)
 
         # Filling z_freq array
         for l in range(len(masked_radar)):
             z_freq[l, 0] = (
-                (masked_radar[l] >= 20) & (masked_radar[l] < 25)
+                (masked_radar[l] >= -10) & (masked_radar[l] < -5)
             ).sum()
             z_freq[l, 1] = (
-                (masked_radar[l] >= 25) & (masked_radar[l] < 30)
+                (masked_radar[l] >= -5) & (masked_radar[l] < 0)
             ).sum()
             z_freq[l, 2] = (
-                (masked_radar[l] >= 30) & (masked_radar[l] < 35)
+                (masked_radar[l] >= 0) & (masked_radar[l] < 5)
             ).sum()
             z_freq[l, 3] = (
-                (masked_radar[l] >= 35) & (masked_radar[l] < 40)
+                (masked_radar[l] >= 5) & (masked_radar[l] < 10)
             ).sum()
             z_freq[l, 4] = (
-                (masked_radar[l] >= 40) & (masked_radar[l] < 45)
+                (masked_radar[l] >= 10) & (masked_radar[l] < 15)
             ).sum()
             z_freq[l, 5] = (
-                (masked_radar[l] >= 45) & (masked_radar[l] < 50)
+                (masked_radar[l] >= 15) & (masked_radar[l] < 20)
             ).sum()
             z_freq[l, 6] = (
-                (masked_radar[l] >= 50) & (masked_radar[l] < 55)
+                (masked_radar[l] >= 20) & (masked_radar[l] < 25)
             ).sum()
             z_freq[l, 7] = (
-                (masked_radar[l] >= 55) & (masked_radar[l] < 60)
+                (masked_radar[l] >= 25) & (masked_radar[l] < 30)
             ).sum()
             z_freq[l, 8] = (
-                (masked_radar[l] >= 60) & (masked_radar[l] < 65)
+                (masked_radar[l] >= 30) & (masked_radar[l] < 35)
             ).sum()
             z_freq[l, 9] = (
+                (masked_radar[l] >= 35) & (masked_radar[l] < 40)
+            ).sum()
+            z_freq[l, 10] = (
+                (masked_radar[l] >= 40) & (masked_radar[l] < 45)
+            ).sum()
+            z_freq[l, 11] = (
+                (masked_radar[l] >= 45) & (masked_radar[l] < 50)
+            ).sum()
+            z_freq[l, 12] = (
+                (masked_radar[l] >= 50) & (masked_radar[l] < 55)
+            ).sum()
+            z_freq[l, 13] = (
+                (masked_radar[l] >= 55) & (masked_radar[l] < 60)
+            ).sum()
+            z_freq[l, 14] = (
+                (masked_radar[l] >= 60) & (masked_radar[l] < 65)
+            ).sum()
+            z_freq[l, 15] = (
                 (masked_radar[l] >= 65) & (masked_radar[l] < 70)
             ).sum()
         # print(z_freq)
@@ -330,50 +352,53 @@ for d in dates:
         print("z_freq done!")
 
         # Filling VIL/VII arrays
-        for l in range(len(masked_radar) - 1):
-            meanarray = np.nanmean(
-                np.array([masked_radar[l], masked_radar[l + 1]]), axis=0
-            )
-            meanarray = np.nan_to_num(meanarray)
-            vil += (meanarray) ** (4 / 7)
-            vii += (5.28e-18 / 720 * meanarray) ** (4 / 7)
-        vil = 3.44e-6 * vil * 1000
-        vii = np.pi * 917 * ((4e6) ** (3 / 7)) * vii * 1000
-        # print(vil)
-        # print(vii)
-        # print(vil[np.where(vil != 0.0)])
-        # print(vii[np.where(vii != 0.0)])
-        vil = vil * 10000 #-- NEED TO CONVERT BACK WHEN OPENING!!!!
-        vii = vii * 10000 #-- NEED TO CONVERT BACK WHEN OPENING!!!!
-        to_db_vil = vil.astype(np.int16)
-        to_db_vii = vii.astype(np.int16)
-        print("VIL, VII done!")
+        # for l in range(len(masked_radar) - 1):
+        #     meanarray = np.nanmean(
+        #         np.array([masked_radar[l], masked_radar[l + 1]]), axis=0
+        #     )
+        #     meanarray = np.nan_to_num(meanarray)
+        #     vil += (meanarray) ** (4 / 7)
+        #     vii += (5.28e-18 / 720 * meanarray) ** (4 / 7)
+        # vil = 3.44e-6 * vil * 1000
+        # vii = np.pi * 917 * ((4e6) ** (3 / 7)) * vii * 1000
+        # # print(vil)
+        # # print(vii)
+        # # print(vil[np.where(vil != 0.0)])
+        # # print(vii[np.where(vii != 0.0)])
+        # vil = vil * 10000 #-- NEED TO CONVERT BACK WHEN OPENING!!!!
+        # vii = vii * 10000 #-- NEED TO CONVERT BACK WHEN OPENING!!!!
+        # to_db_vil = vil.astype(np.int16)
+        # to_db_vii = vii.astype(np.int16)
+        # print("VIL, VII done!")
 
         # print(to_db_z_freq)
         # print(to_db_vil)
         # print(to_db_vii)
 
         # Add to database
+        # query = (
+        #     "UPDATE systems_filtered "
+        #     + "SET z_freq = %s, vil_kgm2 = %s, vii_kgm2 = %s "
+        #     + "WHERE name = %s AND date_time = timestamp %s"
+        # )
         query = (
             "UPDATE systems_filtered "
-            + "SET z_freq = %s, vil_kgm2 = %s, vii_kgm2 = %s "
+            + "SET z_freq = %s "
             + "WHERE name = %s AND date_time = timestamp %s"
         )
         print(query)
 
-        cur = db.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute(
-            query,
-            (
-                to_db_z_freq,
-                to_db_vil,
-                to_db_vii,
-                str(syst.name),
-                str(syst.timestamp),
-            ),
-        )
-        db.conn.commit()
-        cur.close()
+        # cur = db.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        # cur.execute(
+        #     query,
+        #     (
+        #         to_db_z_freq,
+        #         str(syst.name),
+        #         str(syst.timestamp),
+        #     ),
+        # )
+        # db.conn.commit()
+        # cur.close()
 """
 
 # Generating time derivations (area, lightning, echotops)
@@ -448,4 +473,4 @@ for name in names:
         )
         db.conn.commit()
     cur.close()
-# %%
+"""

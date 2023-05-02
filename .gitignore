@@ -128,3 +128,4 @@ sipam-tracking/.Rprofile
 .Rproj.user
 sipam-tracking/.RData
 .gitignore
+sipam-tracking/my_secrets.py
