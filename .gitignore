@@ -129,3 +129,4 @@ sipam-tracking/.Rprofile
 sipam-tracking/.RData
 .gitignore
 sipam-tracking/my_secrets.py
+sipam-tracking/.Rhistory
