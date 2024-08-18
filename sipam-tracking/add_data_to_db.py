@@ -252,7 +252,7 @@ for d in dates:
         # db.conn.commit()
         # cur.close()
 """
-# Generating CFAD, VIL, VII, maxVIL, maxVII columns
+# Generating CFAD, VIL, VII, VIWL, maxVIL, maxVII, maxVIWL columns
 for d in dates:
     # Radar data
     radar, extent = read_radar(

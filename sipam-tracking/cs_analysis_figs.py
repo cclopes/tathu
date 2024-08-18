@@ -648,7 +648,7 @@ nogld_names = nogld_df.loc[nogld_df.gld == 0].index.to_list()
 
 # PLOTS
 # - Path to save figures
-figpath = "./sipam-tracking/out/goamazon/figs/"
+figpath = "/home/camilacl/git/tathu/sipam-tracking/out/goamazon/figs/"
 
 # Plot labels and custom legends
 
@@ -1720,6 +1720,9 @@ classes.loc["CS with full lifecycle (%)"] = [
     * 100,
 ]
 
+#-- save table to csv
+pd.DataFrame(classes).astype(int).to_csv(figpath + "exploratory_stats_class_table.csv")
+
 fig, ax = plt.subplots(figsize=(6, 2))
 
 # hide axes
@@ -1826,6 +1829,9 @@ classes.loc["CS with full lifecycle (%)"] = [
     * 100,
 ]
 
+#-- save table to csv
+pd.DataFrame(classes).astype(int).to_csv(figpath + "exploratory_stats_class_init_table.csv")
+
 fig, ax = plt.subplots(figsize=(6, 2))
 
 # hide axes
@@ -1900,6 +1906,9 @@ colors = [
     for row in durs.values
 ]
 
+#-- save table to csv
+pd.DataFrame(durs).astype(int).to_csv(figpath + "exploratory_stats_dur_table.csv")
+
 fig, ax = plt.subplots(figsize=(6, 2))
 
 # hide axes
@@ -1973,6 +1982,9 @@ colors = [
     ]
     for row in durs.values
 ]
+
+#-- save table to csv
+pd.DataFrame(durs).astype(int).to_csv(figpath + "exploratory_stats_dur_init_table.csv")
 
 fig, ax = plt.subplots(figsize=(6, 2))
 
@@ -2264,7 +2276,7 @@ plt.clf()
 plt.close(fig)
 fig, gs, ax1, ax2, axplot = [None] * 5
 
-
+"""
 # 6. Duration, per season
 print("---- Plotting duration per season ----")
 hourly_wet = pd.DataFrame(
@@ -2345,6 +2357,9 @@ colors = [
     ]
     for row in hourly.values
 ]
+
+#-- save table to csv
+pd.DataFrame(hourly).astype(int).to_csv(figpath + "exploratory_stats_dur_seasons_table.csv")
 
 fig, ax = plt.subplots(figsize=(6, 3))
 
@@ -2469,6 +2484,9 @@ colors = [
     for row in hourly.values
 ]
 
+#-- save table to csv
+pd.DataFrame(hourly).astype(int).to_csv(figpath + "exploratory_stats_dur_seasons_init_table.csv")
+
 fig, ax = plt.subplots(figsize=(6, 3))
 
 # hide axes
@@ -2578,6 +2596,9 @@ colors = [
     for row in hourly.values
 ]
 
+#-- save table to csv
+pd.DataFrame(hourly).astype(int).to_csv(figpath + "exploratory_stats_dur_iops_table.csv")
+
 fig, ax = plt.subplots(figsize=(6, 3))
 
 # hide axes
@@ -2685,6 +2706,9 @@ colors = [
     for row in hourly.values
 ]
 
+#-- save table to csv
+pd.DataFrame(hourly).astype(int).to_csv(figpath + "exploratory_stats_dur_iops_init_table.csv")
+
 fig, ax = plt.subplots(figsize=(6, 3))
 
 # hide axes
@@ -2728,7 +2752,7 @@ plt.clf()
 plt.close(fig)
 fig, ax, header, table = [None] * 4
 
-
+"""
 # 8. Clusters during the day, per season
 print("---- Plotting clusters during the day per season ----")
 hourly_wet = pd.DataFrame(
