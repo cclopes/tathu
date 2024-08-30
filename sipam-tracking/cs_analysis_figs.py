@@ -144,8 +144,7 @@ decho40 = [q[5] for q in db.query(query)]
 print("decho40 = #", len(decho40))
 # -- Cl VIL, VII
 query = (
-    "SELECT vil_kgm2, vii_kgm2 FROM systems_filtered ORDER BY name,"
-    " date_time ASC"
+    "SELECT vil_kgm2, vii_kgm2 FROM systems_filtered ORDER BY name," " date_time ASC"
 )
 vil = [bytea2nparray(q[0]) / 10000 for q in db.query(query)]
 print("vil = #", len(vil))
@@ -167,8 +166,8 @@ print("dgld = #", len(dgld))
 # -- Cl initiation
 query = (
     "SELECT date_init25, totaerosol25_1_cm3, totccn25_1_cm3, cape25_j_kg,"
-    " cin25_j_kg, blrh25_pc, lvws25_m_s FROM systems_filtered ORDER BY name,"
-    " date_time ASC"
+    " cin25_j_kg, blrh25_pc, lvws25_m_s, ufaerosol25_1_cm3, wcd25_km"
+    " FROM systems_filtered ORDER BY name, date_time ASC"
 )
 date_init25 = [q[0] for q in db.query(query)]
 print("date_init25 = #", len(date_init25))
@@ -184,10 +183,14 @@ blrh25 = [q[5] for q in db.query(query)]
 print("blrh25 = #", len(blrh25))
 lvws25 = [q[6] for q in db.query(query)]
 print("lvws25 = #", len(lvws25))
+ufaerosol25 = [q[7] for q in db.query(query)]
+print("ufaerosol25 = #", len(ufaerosol25))
+wcd25 = [q[8] for q in db.query(query)]
+print("wcd25 = #", len(wcd25))
 query = (
     "SELECT DISTINCT ON (name) date_init25, totaerosol25_1_cm3, totccn25_1_cm3,"
-    " cape25_j_kg, cin25_j_kg, blrh25_pc, lvws25_m_s FROM systems_filtered"
-    " ORDER BY name, date_time ASC"
+    " cape25_j_kg, cin25_j_kg, blrh25_pc, lvws25_m_s, ufaerosol25_1_cm3, wcd25_km"
+    " FROM systems_filtered ORDER BY name, date_time ASC"
 )
 date_init25_per = [q[0] for q in db.query(query)]
 print("date_init25_per = #", len(date_init25_per))
@@ -203,10 +206,14 @@ blrh25_per = [q[5] for q in db.query(query)]
 print("blrh25_per = #", len(blrh25_per))
 lvws25_per = [q[6] for q in db.query(query)]
 print("lvws25_per = #", len(lvws25_per))
+ufaerosol25_per = [q[7] for q in db.query(query)]
+print("ufaerosol25_per = #", len(ufaerosol25_per))
+wcd25_per = [q[8] for q in db.query(query)]
+print("wcd25_per = #", len(wcd25_per))
 query = (
     "SELECT date_init10, totaerosol10_1_cm3, totccn10_1_cm3, cape10_j_kg,"
-    " cin10_j_kg, blrh10_pc, lvws10_m_s FROM systems_filtered ORDER BY name,"
-    " date_time ASC"
+    " cin10_j_kg, blrh10_pc, lvws10_m_s, ufaerosol10_1_cm3, wcd10_km"
+    " FROM systems_filtered ORDER BY name, date_time ASC"
 )
 date_init10 = [q[0] for q in db.query(query)]
 print("date_init10 = #", len(date_init10))
@@ -222,10 +229,14 @@ blrh10 = [q[5] for q in db.query(query)]
 print("blrh10 = #", len(blrh10))
 lvws10 = [q[6] for q in db.query(query)]
 print("lvws10 = #", len(lvws10))
+ufaerosol10 = [q[7] for q in db.query(query)]
+print("ufaerosol10 = #", len(ufaerosol10))
+wcd10 = [q[8] for q in db.query(query)]
+print("wcd10 = #", len(wcd10))
 query = (
     "SELECT DISTINCT ON (name) date_init10, totaerosol10_1_cm3, totccn10_1_cm3,"
-    " cape10_j_kg, cin10_j_kg, blrh10_pc, lvws10_m_s FROM systems_filtered"
-    " ORDER BY name, date_time ASC"
+    " cape10_j_kg, cin10_j_kg, blrh10_pc, lvws10_m_s, ufaerosol10_1_cm3, wcd10_km"
+    " FROM systems_filtered ORDER BY name, date_time ASC"
 )
 date_init10_per = [q[0] for q in db.query(query)]
 print("date_init10_per = #", len(date_init10_per))
@@ -241,6 +252,10 @@ blrh10_per = [q[5] for q in db.query(query)]
 print("blrh10_per = #", len(blrh10_per))
 lvws10_per = [q[6] for q in db.query(query)]
 print("lvws10_per = #", len(lvws10_per))
+ufaerosol10_per = [q[7] for q in db.query(query)]
+print("ufaerosol10_per = #", len(ufaerosol10_per))
+wcd10_per = [q[8] for q in db.query(query)]
+print("wcd10_per = #", len(wcd10_per))
 
 # - From systems
 print("From systems...")
@@ -390,16 +405,17 @@ systems_all_init25 = pd.concat(
             {
                 "date_init25": date_init25,
                 "totaerosol25": totaerosol25,
-                "totccn25": totccn25,
                 "cape25": cape25,
                 "cin25": cin25,
                 "blrh25": blrh25,
                 "lvws25": lvws25,
+                "ufaerosol25": ufaerosol25,
+                "wcd25": wcd25,
             }
         ),
     ],
     axis=1,
-).dropna(subset=["totaerosol25"])
+).dropna(subset=["totaerosol25", "ufaerosol25", "wcd25"])
 systems_per_init10 = pd.concat(
     [
         systems_per,
@@ -407,16 +423,17 @@ systems_per_init10 = pd.concat(
             {
                 "date_init10": date_init10_per,
                 "totaerosol10": totaerosol10_per,
-                "totccn10": totccn10_per,
                 "cape10": cape10_per,
                 "cin10": cin10_per,
                 "blrh10": blrh10_per,
                 "lvws10": lvws10_per,
+                "ufaerosol10": ufaerosol10_per,
+                "wcd10": wcd10_per,
             }
         ),
     ],
     axis=1,
-).dropna(subset=["totaerosol10"])
+).dropna(subset=["totaerosol10", "ufaerosol10", "wcd10"])
 systems_per_init25 = pd.concat(
     [
         systems_per,
@@ -424,16 +441,17 @@ systems_per_init25 = pd.concat(
             {
                 "date_init25": date_init25_per,
                 "totaerosol25": totaerosol25_per,
-                "totccn25": totccn25_per,
                 "cape25": cape25_per,
                 "cin25": cin25_per,
                 "blrh25": blrh25_per,
                 "lvws25": lvws25_per,
+                "ufaerosol25": ufaerosol25_per,
+                "wcd25": wcd25_per,
             }
         ),
     ],
     axis=1,
-).dropna(subset=["totaerosol25"])
+).dropna(subset=["totaerosol25", "ufaerosol25", "wcd25"])
 systems_all_init10 = pd.concat(
     [
         systems_all,
@@ -441,16 +459,17 @@ systems_all_init10 = pd.concat(
             {
                 "date_init10": date_init10,
                 "totaerosol10": totaerosol10,
-                "totccn10": totccn10,
                 "cape10": cape10,
                 "cin10": cin10,
                 "blrh10": blrh10,
                 "lvws10": lvws10,
+                "ufaerosol10": ufaerosol10,
+                "wcd10": wcd10,
             }
         ),
     ],
     axis=1,
-).dropna(subset=["totaerosol10"])
+).dropna(subset=["totaerosol10", "ufaerosol10", "wcd10"])
 
 # - From systems
 systems_all_full = pd.DataFrame(
@@ -464,9 +483,7 @@ systems_all_full = pd.DataFrame(
     }
 )
 systems_all_full.timestamp = systems_all_full.timestamp.dt.tz_localize("UTC")
-systems_all_full.timestamp = systems_all_full.timestamp.dt.tz_convert(
-    "America/Manaus"
-)
+systems_all_full.timestamp = systems_all_full.timestamp.dt.tz_convert("America/Manaus")
 systems_per_full = pd.DataFrame(
     {
         "name": namesd_full,
@@ -476,9 +493,7 @@ systems_per_full = pd.DataFrame(
     }
 )
 systems_per_full.timestamp = systems_per_full.timestamp.dt.tz_localize("UTC")
-systems_per_full.timestamp = systems_per_full.timestamp.dt.tz_convert(
-    "America/Manaus"
-)
+systems_per_full.timestamp = systems_per_full.timestamp.dt.tz_convert("America/Manaus")
 
 # - Filtered versions
 
@@ -487,21 +502,15 @@ systems_per_full.timestamp = systems_per_full.timestamp.dt.tz_convert(
 systems_all_full_wet = systems_all_full.loc[
     systems_all_full["timestamp"].dt.month.isin([1, 2, 3])
 ]
-systems_all_wet = systems_all.loc[
-    systems_all["timestamp"].dt.month.isin([1, 2, 3])
-]
+systems_all_wet = systems_all.loc[systems_all["timestamp"].dt.month.isin([1, 2, 3])]
 systems_all_full_dry = systems_all_full.loc[
     systems_all_full["timestamp"].dt.month.isin([8, 9, 10])
 ]
-systems_all_dry = systems_all.loc[
-    systems_all["timestamp"].dt.month.isin([8, 9, 10])
-]
+systems_all_dry = systems_all.loc[systems_all["timestamp"].dt.month.isin([8, 9, 10])]
 systems_all_full_drytowet = systems_all_full.loc[
     systems_all_full["timestamp"].dt.month.isin([11, 12])
 ]
-systems_all_drytowet = systems_all.loc[
-    systems_all["timestamp"].dt.month.isin([11, 12])
-]
+systems_all_drytowet = systems_all.loc[systems_all["timestamp"].dt.month.isin([11, 12])]
 systems_all_full_iop1 = systems_all_full.loc[
     (systems_all_full["timestamp"].dt.month.isin([2, 3]))
     & (systems_all_full["timestamp"].dt.year == 2014)
@@ -516,9 +525,7 @@ systems_all_full_iop2 = (
     .reset_index()
 )
 systems_all_iop2 = (
-    systems_all.set_index(["timestamp"])
-    .loc["2014-8-15":"2014-10-15"]
-    .reset_index()
+    systems_all.set_index(["timestamp"]).loc["2014-8-15":"2014-10-15"].reset_index()
 )
 systems_all_init25_wet = systems_all_init25.loc[
     systems_all_init25["timestamp"].dt.month.isin([1, 2, 3])
@@ -562,9 +569,7 @@ systems_all_init10_iop2 = (
 systems_per_full_wet = systems_per_full.loc[
     systems_per_full["timestamp"].dt.month.isin([1, 2, 3])
 ]
-systems_per_wet = systems_per.loc[
-    systems_per["timestamp"].dt.month.isin([1, 2, 3])
-]
+systems_per_wet = systems_per.loc[systems_per["timestamp"].dt.month.isin([1, 2, 3])]
 systems_per_init25_wet = systems_per_init25.loc[
     systems_per_init25["timestamp"].dt.month.isin([1, 2, 3])
 ]
@@ -574,9 +579,7 @@ systems_per_init10_wet = systems_per_init10.loc[
 systems_per_full_dry = systems_per_full.loc[
     systems_per_full["timestamp"].dt.month.isin([8, 9, 10])
 ]
-systems_per_dry = systems_per.loc[
-    systems_per["timestamp"].dt.month.isin([8, 9, 10])
-]
+systems_per_dry = systems_per.loc[systems_per["timestamp"].dt.month.isin([8, 9, 10])]
 systems_per_init25_dry = systems_per_init25.loc[
     systems_per_init25["timestamp"].dt.month.isin([8, 9, 10])
 ]
@@ -586,9 +589,7 @@ systems_per_init10_dry = systems_per_init10.loc[
 systems_per_full_drytowet = systems_per_full.loc[
     systems_per_full["timestamp"].dt.month.isin([11, 12])
 ]
-systems_per_drytowet = systems_per.loc[
-    systems_per["timestamp"].dt.month.isin([11, 12])
-]
+systems_per_drytowet = systems_per.loc[systems_per["timestamp"].dt.month.isin([11, 12])]
 systems_per_init25_drytowet = systems_per_init25.loc[
     systems_per_init25["timestamp"].dt.month.isin([11, 12])
 ]
@@ -617,9 +618,7 @@ systems_per_full_iop2 = (
     .reset_index()
 )
 systems_per_iop2 = (
-    systems_per.set_index(["timestamp"])
-    .loc["2014-8-15":"2014-10-15"]
-    .reset_index()
+    systems_per.set_index(["timestamp"]).loc["2014-8-15":"2014-10-15"].reset_index()
 )
 systems_per_init25_iop2 = (
     systems_per_init25.set_index(["timestamp"])
@@ -853,32 +852,24 @@ legend_rfall_init = [
     Patch(
         facecolor="g",
         edgecolor="k",
-        label="Initiation within 25km (total = "
-        + str(len(systems_all_init25))
-        + ")",
+        label="Initiation within 25km (total = " + str(len(systems_all_init25)) + ")",
     ),
     Patch(
         facecolor="b",
         edgecolor="k",
-        label="Initiation within 10km (total = "
-        + str(len(systems_all_init10))
-        + ")",
+        label="Initiation within 10km (total = " + str(len(systems_all_init10)) + ")",
     ),
 ]
 legend_rfper_init = [
     Patch(
         facecolor="g",
         edgecolor="k",
-        label="Initiation within 25km (total = "
-        + str(len(systems_per_init25))
-        + ")",
+        label="Initiation within 25km (total = " + str(len(systems_per_init25)) + ")",
     ),
     Patch(
         facecolor="b",
         edgecolor="k",
-        label="Initiation within 10km (total = "
-        + str(len(systems_per_init10))
-        + ")",
+        label="Initiation within 10km (total = " + str(len(systems_per_init10)) + ")",
     ),
 ]
 legend_rfall_init_wet = [
@@ -1131,16 +1122,12 @@ legend_ngld_seasons = [
     Patch(
         facecolor="gold",
         edgecolor="k",
-        label="Lightning ("
-        + str(len(systems_all.loc[systems_all.gld > 0]))
-        + ")",
+        label="Lightning (" + str(len(systems_all.loc[systems_all.gld > 0])) + ")",
     ),
     Patch(
         facecolor="gray",
         edgecolor="k",
-        label="No lightning ("
-        + str(len(systems_all.loc[systems_all.gld == 0]))
-        + ")",
+        label="No lightning (" + str(len(systems_all.loc[systems_all.gld == 0])) + ")",
     ),
     Patch(
         facecolor="dodgerblue",
@@ -1155,13 +1142,7 @@ legend_ngldcs_seasons = [
         facecolor="gold",
         edgecolor="k",
         label="Lightning ("
-        + str(
-            len(
-                systems_all.loc[systems_all.gld > 0]
-                .groupby("geom_name")
-                .first()
-            )
-        )
+        + str(len(systems_all.loc[systems_all.gld > 0].groupby("geom_name").first()))
         + ")",
     ),
     Patch(
@@ -1250,9 +1231,7 @@ legend_gld_seasons = [
     Patch(
         facecolor="yellowgreen",
         edgecolor="k",
-        label="Dry-to-Wet (total = "
-        + str(int(systems_all_drytowet.gld.sum()))
-        + ")",
+        label="Dry-to-Wet (total = " + str(int(systems_all_drytowet.gld.sum())) + ")",
     ),
     Patch(
         facecolor="dodgerblue",
@@ -1409,9 +1388,7 @@ legend_nogldinit_iops = [
         label="IOP1 (Wet Season) (total = "
         + str(
             len(
-                systems_all_iop1.loc[
-                    systems_all_iop1.geom_name.isin(nogld_names)
-                ]
+                systems_all_iop1.loc[systems_all_iop1.geom_name.isin(nogld_names)]
                 .groupby("geom_name")
                 .first()
             )
@@ -1424,9 +1401,7 @@ legend_nogldinit_iops = [
         label="IOP2 (Dry Season) (total = "
         + str(
             len(
-                systems_all_iop2.loc[
-                    systems_all_iop2.geom_name.isin(nogld_names)
-                ]
+                systems_all_iop2.loc[systems_all_iop2.geom_name.isin(nogld_names)]
                 .groupby("geom_name")
                 .first()
             )
@@ -1449,7 +1424,7 @@ legend_pmap = [
 print(systems_per_init25.describe())
 # print(systems_per_init25['duration'].quantile(q=0.1))
 
-"""
+
 # 1. Area
 print("---- Plotting area ----")
 fig = plt.figure(figsize=(7, 5))
@@ -1606,7 +1581,9 @@ axplot = systems_all_init25[["max", "mean"]].plot.hist(
 )
 axplot.set_ylim((0, 45))
 axplot.set_ylabel("Frequency (%)")
-axplot.set_title("Initiation within 25km (total = " + str(len(systems_all_init25)) + ")")
+axplot.set_title(
+    "Initiation within 25km (total = " + str(len(systems_all_init25)) + ")"
+)
 axplot.set_title("a", loc="left", fontweight="bold", size=16)
 
 ax2 = fig.add_subplot(gs[1, 0])
@@ -1623,9 +1600,7 @@ axplot.set_ylim((0, 45))
 axplot.set_ylabel("Frequency (%)")
 axplot.set_xlabel("dBZ")
 axplot.set_title(
-    "Initiation within 10km (total = "
-    + str(len(systems_all_init10))
-    + ")"
+    "Initiation within 10km (total = " + str(len(systems_all_init10)) + ")"
 )
 axplot.set_title("b", loc="left", fontweight="bold", size=16)
 
@@ -1649,9 +1624,7 @@ dt = []
 for file in files:
     filelist = open(file, "r")
     dt.append(
-        datetime.strptime(
-            [line.strip() for line in filelist][0][61:73], "%Y%m%d%H%M"
-        )
+        datetime.strptime([line.strip() for line in filelist][0][61:73], "%Y%m%d%H%M")
     )
 dts = pd.Series(dt)
 dts = dts.dt.tz_localize("UTC")
@@ -1685,16 +1658,14 @@ classes.loc["CS spontaneously generated (%)"] = [
 ]
 classes.loc["CS with split/merge (%)"] = [
     len(
-        systems_all_full.loc[
-            systems_all_full.event.isin(["SPLIT", "MERGE"])
-        ].groupby("name")
+        systems_all_full.loc[systems_all_full.event.isin(["SPLIT", "MERGE"])].groupby(
+            "name"
+        )
     )
     / classes["Raw"][0]
     * 100,
     len(
-        systems_all.loc[systems_all.event.isin(["SPLIT", "MERGE"])].groupby(
-            "geom_name"
-        )
+        systems_all.loc[systems_all.event.isin(["SPLIT", "MERGE"])].groupby("geom_name")
     )
     / classes["Filtered"][0]
     * 100,
@@ -1720,7 +1691,7 @@ classes.loc["CS with full lifecycle (%)"] = [
     * 100,
 ]
 
-#-- save table to csv
+# -- save table to csv
 pd.DataFrame(classes).astype(int).to_csv(figpath + "exploratory_stats_class_table.csv")
 
 fig, ax = plt.subplots(figsize=(6, 2))
@@ -1758,9 +1729,7 @@ dt = []
 for file in files:
     filelist = open(file, "r")
     dt.append(
-        datetime.strptime(
-            [line.strip() for line in filelist][0][61:73], "%Y%m%d%H%M"
-        )
+        datetime.strptime([line.strip() for line in filelist][0][61:73], "%Y%m%d%H%M")
     )
 dts = pd.Series(dt)
 dts = dts.dt.tz_localize("UTC")
@@ -1829,8 +1798,10 @@ classes.loc["CS with full lifecycle (%)"] = [
     * 100,
 ]
 
-#-- save table to csv
-pd.DataFrame(classes).astype(int).to_csv(figpath + "exploratory_stats_class_init_table.csv")
+# -- save table to csv
+pd.DataFrame(classes).astype(int).to_csv(
+    figpath + "exploratory_stats_class_init_table.csv"
+)
 
 fig, ax = plt.subplots(figsize=(6, 2))
 
@@ -1852,9 +1823,7 @@ for (row, col), cell in table.get_celld().items():
 
 fig.tight_layout()
 
-plt.savefig(
-    figpath + "exploratory_stats_class_init.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_class_init.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -1896,17 +1865,13 @@ durs = durs.rename(
 norm = mpcolors.LogNorm(1, 100000)
 colors = [
     [
-        (
-            "white"
-            if not np.issubdtype(type(val), np.number)
-            else plt.cm.BuPu(norm(val))
-        )
+        ("white" if not np.issubdtype(type(val), np.number) else plt.cm.BuPu(norm(val)))
         for val in row
     ]
     for row in durs.values
 ]
 
-#-- save table to csv
+# -- save table to csv
 pd.DataFrame(durs).astype(int).to_csv(figpath + "exploratory_stats_dur_table.csv")
 
 fig, ax = plt.subplots(figsize=(6, 2))
@@ -1950,7 +1915,10 @@ durs = pd.DataFrame(
         ).size(),
     }
 ).append(
-    {"Initiation within 25km": str(len(systems_per_init25)), "Initiation within 10km": str(len(systems_per_init10))},
+    {
+        "Initiation within 25km": str(len(systems_per_init25)),
+        "Initiation within 10km": str(len(systems_per_init10)),
+    },
     ignore_index=True,
 )
 durs = durs.rename(
@@ -1973,17 +1941,13 @@ durs = durs.rename(
 norm = mpcolors.LogNorm(1, 100000)
 colors = [
     [
-        (
-            "white"
-            if not np.issubdtype(type(val), np.number)
-            else plt.cm.BuPu(norm(val))
-        )
+        ("white" if not np.issubdtype(type(val), np.number) else plt.cm.BuPu(norm(val)))
         for val in row
     ]
     for row in durs.values
 ]
 
-#-- save table to csv
+# -- save table to csv
 pd.DataFrame(durs).astype(int).to_csv(figpath + "exploratory_stats_dur_init_table.csv")
 
 fig, ax = plt.subplots(figsize=(6, 2))
@@ -2055,9 +2019,7 @@ ax1 = fig.add_subplot(gs[0, 0])
 axplot = monthly_all.plot(kind="bar", color=["w", "k"], edgecolor="k", ax=ax1)
 axplot.set_ylim((0, 11))
 # Wet/dry season bars
-axplot.axvspan(
-    -0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
-)
+axplot.axvspan(-0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(6.5, 9.5, facecolor="r", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(
     11.5, 14.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
@@ -2101,9 +2063,7 @@ ax2 = fig.add_subplot(gs[1, 0])
 axplot = monthly_per.plot(kind="bar", color=["w", "k"], edgecolor="k", ax=ax2)
 axplot.set_ylim((0, 11))
 # Wet/dry season bars
-axplot.axvspan(
-    -0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
-)
+axplot.axvspan(-0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(6.5, 9.5, facecolor="r", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(
     11.5, 14.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
@@ -2138,9 +2098,7 @@ fig.suptitle("Monthly distributions", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_monthly.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_monthly.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -2184,9 +2142,7 @@ ax1 = fig.add_subplot(gs[0, 0])
 axplot = monthly_all.plot(kind="bar", color=["g", "b"], edgecolor="k", ax=ax1)
 axplot.set_ylim((0, 11))
 # Wet/dry season bars
-axplot.axvspan(
-    -0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
-)
+axplot.axvspan(-0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(6.5, 9.5, facecolor="r", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(
     11.5, 14.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
@@ -2230,9 +2186,7 @@ ax2 = fig.add_subplot(gs[1, 0])
 axplot = monthly_per.plot(kind="bar", color=["g", "b"], edgecolor="k", ax=ax2)
 axplot.set_ylim((0, 11))
 # Wet/dry season bars
-axplot.axvspan(
-    -0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
-)
+axplot.axvspan(-0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(6.5, 9.5, facecolor="r", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(
     11.5, 14.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
@@ -2267,16 +2221,14 @@ fig.suptitle("Monthly distributions", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_monthly_init.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_monthly_init.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
 plt.close(fig)
 fig, gs, ax1, ax2, axplot = [None] * 5
 
-"""
+
 # 6. Duration, per season
 print("---- Plotting duration per season ----")
 hourly_wet = pd.DataFrame(
@@ -2348,18 +2300,16 @@ hourly = hourly.rename(
 norm = mpcolors.LogNorm(1, 100000)
 colors = [
     [
-        (
-            "white"
-            if not np.issubdtype(type(val), np.number)
-            else plt.cm.BuPu(norm(val))
-        )
+        ("white" if not np.issubdtype(type(val), np.number) else plt.cm.BuPu(norm(val)))
         for val in row
     ]
     for row in hourly.values
 ]
 
-#-- save table to csv
-pd.DataFrame(hourly).astype(int).to_csv(figpath + "exploratory_stats_dur_seasons_table.csv")
+# -- save table to csv
+pd.DataFrame(hourly).astype(int).to_csv(
+    figpath + "exploratory_stats_dur_seasons_table.csv"
+)
 
 fig, ax = plt.subplots(figsize=(6, 3))
 
@@ -2395,9 +2345,7 @@ for (row, col), cell in table.get_celld().items():
 fig.tight_layout()
 
 
-plt.savefig(
-    figpath + "exploratory_stats_dur_seasons.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_dur_seasons.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -2474,18 +2422,16 @@ hourly = hourly.rename(
 norm = mpcolors.LogNorm(1, 100000)
 colors = [
     [
-        (
-            "white"
-            if not np.issubdtype(type(val), np.number)
-            else plt.cm.BuPu(norm(val))
-        )
+        ("white" if not np.issubdtype(type(val), np.number) else plt.cm.BuPu(norm(val)))
         for val in row
     ]
     for row in hourly.values
 ]
 
-#-- save table to csv
-pd.DataFrame(hourly).astype(int).to_csv(figpath + "exploratory_stats_dur_seasons_init_table.csv")
+# -- save table to csv
+pd.DataFrame(hourly).astype(int).to_csv(
+    figpath + "exploratory_stats_dur_seasons_init_table.csv"
+)
 
 fig, ax = plt.subplots(figsize=(6, 3))
 
@@ -2586,18 +2532,16 @@ hourly = hourly.rename(
 norm = mpcolors.LogNorm(1, 100000)
 colors = [
     [
-        (
-            "white"
-            if not np.issubdtype(type(val), np.number)
-            else plt.cm.BuPu(norm(val))
-        )
+        ("white" if not np.issubdtype(type(val), np.number) else plt.cm.BuPu(norm(val)))
         for val in row
     ]
     for row in hourly.values
 ]
 
-#-- save table to csv
-pd.DataFrame(hourly).astype(int).to_csv(figpath + "exploratory_stats_dur_iops_table.csv")
+# -- save table to csv
+pd.DataFrame(hourly).astype(int).to_csv(
+    figpath + "exploratory_stats_dur_iops_table.csv"
+)
 
 fig, ax = plt.subplots(figsize=(6, 3))
 
@@ -2633,9 +2577,7 @@ for (row, col), cell in table.get_celld().items():
 fig.tight_layout()
 
 
-plt.savefig(
-    figpath + "exploratory_stats_dur_iops.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_dur_iops.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -2696,18 +2638,16 @@ hourly = hourly.rename(
 norm = mpcolors.LogNorm(1, 100000)
 colors = [
     [
-        (
-            "white"
-            if not np.issubdtype(type(val), np.number)
-            else plt.cm.BuPu(norm(val))
-        )
+        ("white" if not np.issubdtype(type(val), np.number) else plt.cm.BuPu(norm(val)))
         for val in row
     ]
     for row in hourly.values
 ]
 
-#-- save table to csv
-pd.DataFrame(hourly).astype(int).to_csv(figpath + "exploratory_stats_dur_iops_init_table.csv")
+# -- save table to csv
+pd.DataFrame(hourly).astype(int).to_csv(
+    figpath + "exploratory_stats_dur_iops_init_table.csv"
+)
 
 fig, ax = plt.subplots(figsize=(6, 3))
 
@@ -2743,16 +2683,14 @@ for (row, col), cell in table.get_celld().items():
 fig.tight_layout()
 
 
-plt.savefig(
-    figpath + "exploratory_stats_dur_iops_init.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_dur_iops_init.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
 plt.close(fig)
 fig, ax, header, table = [None] * 4
 
-"""
+
 # 8. Clusters during the day, per season
 print("---- Plotting clusters during the day per season ----")
 hourly_wet = pd.DataFrame(
@@ -2765,9 +2703,7 @@ hourly_wet = pd.DataFrame(
             * 100
         ),
         "no-full": (
-            systems_all_wet.groupby(systems_all_wet.timestamp.dt.hour)
-            .count()
-            .timestamp
+            systems_all_wet.groupby(systems_all_wet.timestamp.dt.hour).count().timestamp
             / len(systems_all_wet)
             * 100
         ),
@@ -2783,9 +2719,7 @@ hourly_dry = pd.DataFrame(
             * 100
         ),
         "no-full": (
-            systems_all_dry.groupby(systems_all_dry.timestamp.dt.hour)
-            .count()
-            .timestamp
+            systems_all_dry.groupby(systems_all_dry.timestamp.dt.hour).count().timestamp
             / len(systems_all_dry)
             * 100
         ),
@@ -2819,13 +2753,9 @@ ax1 = fig.add_subplot(gs[0, 0])
 axplot = hourly_dry.plot(kind="bar", color=["w", "k"], edgecolor="k", ax=ax1)
 axplot.set_ylim((0, 18))
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
 axplot.set_xlabel("")
 axplot.set_xticklabels(labels=time_labels_hour)
@@ -2835,17 +2765,11 @@ axplot.set_title("a", loc="left", fontweight="bold", size=16)
 axplot.legend(handles=legend_rfall_dry, loc="upper left")
 
 ax2 = fig.add_subplot(gs[1, 0])
-axplot = hourly_drytowet.plot(
-    kind="bar", color=["w", "k"], edgecolor="k", ax=ax2
-)
+axplot = hourly_drytowet.plot(kind="bar", color=["w", "k"], edgecolor="k", ax=ax2)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
 axplot.set_ylim((0, 18))
 axplot.set_xlabel("")
@@ -2858,13 +2782,9 @@ axplot.legend(handles=legend_rfall_drytowet, loc="upper left")
 ax3 = fig.add_subplot(gs[2, 0])
 axplot = hourly_wet.plot(kind="bar", color=["w", "k"], edgecolor="k", ax=ax3)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
 axplot.set_ylim((0, 18))
 axplot.set_xlabel("Local Time")
@@ -2976,16 +2896,12 @@ gs = fig.add_gridspec(3, 1)
 
 ax1 = fig.add_subplot(gs[0, 0])
 axplot = hourly_dry.plot(kind="bar", color=["g", "b"], edgecolor="k", ax=ax1)
-axplot.set_ylim((0, 18))
+axplot.set_ylim((0, 20))
 axplot.set_xlim((0, 23))
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
 axplot.set_xlabel("")
 axplot.set_xticklabels(labels=time_labels_hour)
@@ -2995,19 +2911,13 @@ axplot.set_title("a", loc="left", fontweight="bold", size=16)
 axplot.legend(handles=legend_rfall_init_dry, loc="upper left")
 
 ax2 = fig.add_subplot(gs[1, 0])
-axplot = hourly_drytowet.plot(
-    kind="bar", color=["g", "b"], edgecolor="k", ax=ax2
-)
+axplot = hourly_drytowet.plot(kind="bar", color=["g", "b"], edgecolor="k", ax=ax2)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
-axplot.set_ylim((0, 18))
+axplot.set_ylim((0, 20))
 axplot.set_xlabel("")
 axplot.set_xticklabels(labels=time_labels_hour)
 axplot.set_ylabel("Frequency (%)")
@@ -3018,15 +2928,11 @@ axplot.legend(handles=legend_rfall_init_drytowet, loc="upper left")
 ax3 = fig.add_subplot(gs[2, 0])
 axplot = hourly_wet.plot(kind="bar", color=["g", "b"], edgecolor="k", ax=ax3)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
-axplot.set_ylim((0, 18))
+axplot.set_ylim((0, 20))
 axplot.set_xlabel("Local Time")
 axplot.set_xticklabels(labels=time_labels_hour)
 axplot.set_ylabel("Frequency (%)")
@@ -3038,9 +2944,7 @@ fig.suptitle("Hourly distribution of clusters", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_hourly_init.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_hourly_init.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -3054,9 +2958,7 @@ print("---- Plotting clusters during the day per IOP ----")
 hourly_iop1 = pd.DataFrame(
     {
         "full": (
-            systems_all_full_iop1.groupby(
-                systems_all_full_iop1.timestamp.dt.hour
-            )
+            systems_all_full_iop1.groupby(systems_all_full_iop1.timestamp.dt.hour)
             .count()
             .timestamp
             / len(systems_all_full_iop1)
@@ -3074,9 +2976,7 @@ hourly_iop1 = pd.DataFrame(
 hourly_ìop2 = pd.DataFrame(
     {
         "full": (
-            systems_all_full_iop2.groupby(
-                systems_all_full_iop2.timestamp.dt.hour
-            )
+            systems_all_full_iop2.groupby(systems_all_full_iop2.timestamp.dt.hour)
             .count()
             .timestamp
             / len(systems_all_full_iop2)
@@ -3098,13 +2998,9 @@ gs = fig.add_gridspec(2, 1)
 ax1 = fig.add_subplot(gs[0, 0])
 axplot = hourly_iop1.plot(kind="bar", color=["w", "k"], edgecolor="k", ax=ax1)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
 axplot.set_ylim((0, 17))
 axplot.set_xlabel("")
@@ -3117,13 +3013,9 @@ axplot.legend(handles=legend_rfall_iop1, loc="upper left")
 ax2 = fig.add_subplot(gs[1, 0])
 axplot = hourly_ìop2.plot(kind="bar", color=["w", "k"], edgecolor="k", ax=ax2)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
 axplot.set_ylim((0, 17))
 axplot.set_xlabel("Local Time")
@@ -3137,9 +3029,7 @@ fig.suptitle("Hourly distribution of clusters", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_hourly_iops.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_hourly_iops.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -3148,46 +3038,62 @@ fig, gs, ax1, ax2, axplot = [None] * 5
 
 print("---- Plotting clusters during the day per IOP init ----")
 
-hourly_iop1 = pd.concat([pd.DataFrame(index=pd.Index(np.arange(24))),pd.DataFrame(
-    {
-        "init25": (
-            systems_all_init25_iop1.groupby(
-                systems_all_init25_iop1.timestamp.dt.hour
-            )
-            .count()
-            .timestamp
-            / len(systems_all_init25_iop1)
-            * 100
+hourly_iop1 = pd.concat(
+    [
+        pd.DataFrame(index=pd.Index(np.arange(24))),
+        pd.DataFrame(
+            {
+                "init25": (
+                    systems_all_init25_iop1.groupby(
+                        systems_all_init25_iop1.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_all_init25_iop1)
+                    * 100
+                ),
+                "init10": (
+                    systems_all_init10_iop1.groupby(
+                        systems_all_init10_iop1.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_all_init10_iop1)
+                    * 100
+                ),
+            }
         ),
-        "init10": (
-            systems_all_init10_iop1.groupby(systems_all_init10_iop1.timestamp.dt.hour)
-            .count()
-            .timestamp
-            / len(systems_all_init10_iop1)
-            * 100
+    ],
+    axis=1,
+)
+hourly_ìop2 = pd.concat(
+    [
+        pd.DataFrame(index=pd.Index(np.arange(24))),
+        pd.DataFrame(
+            {
+                "init25": (
+                    systems_all_init25_iop2.groupby(
+                        systems_all_init25_iop2.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_all_init25_iop2)
+                    * 100
+                ),
+                "init10": (
+                    systems_all_init10_iop2.groupby(
+                        systems_all_init10_iop2.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_all_init10_iop2)
+                    * 100
+                ),
+            }
         ),
-    }
-)], axis=1)
-hourly_ìop2 = pd.concat([pd.DataFrame(index=pd.Index(np.arange(24))),pd.DataFrame(
-    {
-        "init25": (
-            systems_all_init25_iop2.groupby(
-                systems_all_init25_iop2.timestamp.dt.hour
-            )
-            .count()
-            .timestamp
-            / len(systems_all_init25_iop2)
-            * 100
-        ),
-        "init10": (
-            systems_all_init10_iop2.groupby(systems_all_init10_iop2.timestamp.dt.hour)
-            .count()
-            .timestamp
-            / len(systems_all_init10_iop2)
-            * 100
-        ),
-    }
-)], axis=1)
+    ],
+    axis=1,
+)
 
 fig = plt.figure(figsize=(7, 5))
 gs = fig.add_gridspec(2, 1)
@@ -3195,15 +3101,11 @@ gs = fig.add_gridspec(2, 1)
 ax1 = fig.add_subplot(gs[0, 0])
 axplot = hourly_iop1.plot(kind="bar", color=["g", "b"], edgecolor="k", ax=ax1)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
-axplot.set_ylim((0, 17))
+axplot.set_ylim((0, 20))
 axplot.set_xlabel("")
 axplot.set_xticklabels(labels=time_labels_hour)
 axplot.set_ylabel("Frequency (%)")
@@ -3214,15 +3116,11 @@ axplot.legend(handles=legend_rfall_init_iop1, loc="upper left")
 ax2 = fig.add_subplot(gs[1, 0])
 axplot = hourly_ìop2.plot(kind="bar", color=["g", "b"], edgecolor="k", ax=ax2)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
-axplot.set_ylim((0, 17))
+axplot.set_ylim((0, 20))
 axplot.set_xlabel("Local Time")
 axplot.set_xticklabels(labels=time_labels_hour)
 axplot.set_ylabel("Frequency (%)")
@@ -3257,9 +3155,7 @@ hourly_wet = pd.DataFrame(
             * 100
         ),
         "no-full": (
-            systems_per_wet.groupby(systems_per_wet.timestamp.dt.hour)
-            .count()
-            .timestamp
+            systems_per_wet.groupby(systems_per_wet.timestamp.dt.hour).count().timestamp
             / len(systems_per_wet)
             * 100
         ),
@@ -3275,9 +3171,7 @@ hourly_dry = pd.DataFrame(
             * 100
         ),
         "no-full": (
-            systems_per_dry.groupby(systems_per_dry.timestamp.dt.hour)
-            .count()
-            .timestamp
+            systems_per_dry.groupby(systems_per_dry.timestamp.dt.hour).count().timestamp
             / len(systems_per_dry)
             * 100
         ),
@@ -3310,13 +3204,9 @@ gs = fig.add_gridspec(3, 1)
 ax1 = fig.add_subplot(gs[0, 0])
 axplot = hourly_dry.plot(kind="bar", color=["w", "k"], edgecolor="k", ax=ax1)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
 axplot.set_ylim((0, 18))
 axplot.set_xlabel("")
@@ -3327,17 +3217,11 @@ axplot.set_title("a", loc="left", fontweight="bold", size=16)
 axplot.legend(handles=legend_rfper_dry, loc="upper left")
 
 ax2 = fig.add_subplot(gs[1, 0])
-axplot = hourly_drytowet.plot(
-    kind="bar", color=["w", "k"], edgecolor="k", ax=ax2
-)
+axplot = hourly_drytowet.plot(kind="bar", color=["w", "k"], edgecolor="k", ax=ax2)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
 axplot.set_ylim((0, 18))
 axplot.set_xlabel("")
@@ -3350,13 +3234,9 @@ axplot.legend(handles=legend_rfper_drytowet, loc="upper left")
 ax3 = fig.add_subplot(gs[2, 0])
 axplot = hourly_wet.plot(kind="bar", color=["w", "k"], edgecolor="k", ax=ax3)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
 axplot.set_ylim((0, 18))
 axplot.set_xlabel("Local Time")
@@ -3381,67 +3261,86 @@ hourly_wet = pd.concat(
     [
         pd.DataFrame(index=pd.Index(np.arange(24))),
         pd.DataFrame(
-    {
-        "init25": (
-            systems_per_init25_wet.groupby(systems_per_init25_wet.timestamp.dt.hour)
-            .count()
-            .timestamp
-            / len(systems_per_init25_wet)
-            * 100
+            {
+                "init25": (
+                    systems_per_init25_wet.groupby(
+                        systems_per_init25_wet.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_per_init25_wet)
+                    * 100
+                ),
+                "init10": (
+                    systems_per_init10_wet.groupby(
+                        systems_per_init10_wet.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_per_init10_wet)
+                    * 100
+                ),
+            }
         ),
-        "init10": (
-            systems_per_init10_wet.groupby(systems_per_init10_wet.timestamp.dt.hour)
-            .count()
-            .timestamp
-            / len(systems_per_init10_wet)
-            * 100
-        ),
-    }
-)], axis=1)
-hourly_dry =  pd.concat(
+    ],
+    axis=1,
+)
+hourly_dry = pd.concat(
     [
         pd.DataFrame(index=pd.Index(np.arange(24))),
         pd.DataFrame(
-    {
-        "init25": (
-            systems_per_init25_dry.groupby(systems_per_init25_dry.timestamp.dt.hour)
-            .count()
-            .timestamp
-            / len(systems_per_init25_dry)
-            * 100
+            {
+                "init25": (
+                    systems_per_init25_dry.groupby(
+                        systems_per_init25_dry.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_per_init25_dry)
+                    * 100
+                ),
+                "init10": (
+                    systems_per_init10_dry.groupby(
+                        systems_per_init10_dry.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_per_init10_dry)
+                    * 100
+                ),
+            }
         ),
-        "init10": (
-            systems_per_init10_dry.groupby(systems_per_init10_dry.timestamp.dt.hour)
-            .count()
-            .timestamp
-            / len(systems_per_init10_dry)
-            * 100
-        ),
-    }
-)], axis=1)
-hourly_drytowet =  pd.concat(
+    ],
+    axis=1,
+)
+hourly_drytowet = pd.concat(
     [
         pd.DataFrame(index=pd.Index(np.arange(24))),
         pd.DataFrame(
-    {
-        "init25": (
-            systems_per_init25_drytowet.groupby(
-                systems_per_init25_drytowet.timestamp.dt.hour
-            )
-            .count()
-            .timestamp
-            / len(systems_per_init25_drytowet)
-            * 100
+            {
+                "init25": (
+                    systems_per_init25_drytowet.groupby(
+                        systems_per_init25_drytowet.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_per_init25_drytowet)
+                    * 100
+                ),
+                "init10": (
+                    systems_per_init10_drytowet.groupby(
+                        systems_per_init10_drytowet.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_per_init10_drytowet)
+                    * 100
+                ),
+            }
         ),
-        "init10": (
-            systems_per_init10_drytowet.groupby(systems_per_init10_drytowet.timestamp.dt.hour)
-            .count()
-            .timestamp
-            / len(systems_per_init10_drytowet)
-            * 100
-        ),
-    }
-)], axis=1)
+    ],
+    axis=1,
+)
 
 fig = plt.figure(figsize=(7, 7))
 gs = fig.add_gridspec(3, 1)
@@ -3449,15 +3348,11 @@ gs = fig.add_gridspec(3, 1)
 ax1 = fig.add_subplot(gs[0, 0])
 axplot = hourly_dry.plot(kind="bar", color=["g", "b"], edgecolor="k", ax=ax1)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
-axplot.set_ylim((0, 18))
+axplot.set_ylim((0, 20))
 axplot.set_xlabel("")
 axplot.set_xticklabels(labels=time_labels_hour)
 axplot.set_ylabel("Frequency (%)")
@@ -3466,19 +3361,13 @@ axplot.set_title("a", loc="left", fontweight="bold", size=16)
 axplot.legend(handles=legend_rfper_init_dry, loc="upper left")
 
 ax2 = fig.add_subplot(gs[1, 0])
-axplot = hourly_drytowet.plot(
-    kind="bar", color=["g", "b"], edgecolor="k", ax=ax2
-)
+axplot = hourly_drytowet.plot(kind="bar", color=["g", "b"], edgecolor="k", ax=ax2)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
-axplot.set_ylim((0, 18))
+axplot.set_ylim((0, 20))
 axplot.set_xlabel("")
 axplot.set_xticklabels(labels=time_labels_hour)
 axplot.set_ylabel("Frequency (%)")
@@ -3489,15 +3378,11 @@ axplot.legend(handles=legend_rfper_init_drytowet, loc="upper left")
 ax3 = fig.add_subplot(gs[2, 0])
 axplot = hourly_wet.plot(kind="bar", color=["g", "b"], edgecolor="k", ax=ax3)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
-axplot.set_ylim((0, 18))
+axplot.set_ylim((0, 20))
 axplot.set_xlabel("Local Time")
 axplot.set_xticklabels(labels=time_labels_hour)
 axplot.set_ylabel("Frequency (%)")
@@ -3521,9 +3406,7 @@ print("---- Plotting initiation during the day per IOP ----")
 hourly_iop1 = pd.DataFrame(
     {
         "full": (
-            systems_per_full_iop1.groupby(
-                systems_per_full_iop1.timestamp.dt.hour
-            )
+            systems_per_full_iop1.groupby(systems_per_full_iop1.timestamp.dt.hour)
             .count()
             .timestamp
             / len(systems_per_full_iop1)
@@ -3541,9 +3424,7 @@ hourly_iop1 = pd.DataFrame(
 hourly_ìop2 = pd.DataFrame(
     {
         "full": (
-            systems_per_full_iop2.groupby(
-                systems_per_full_iop2.timestamp.dt.hour
-            )
+            systems_per_full_iop2.groupby(systems_per_full_iop2.timestamp.dt.hour)
             .count()
             .timestamp
             / len(systems_per_full_iop2)
@@ -3565,13 +3446,9 @@ gs = fig.add_gridspec(2, 1)
 ax1 = fig.add_subplot(gs[0, 0])
 axplot = hourly_iop1.plot(kind="bar", color=["w", "k"], edgecolor="k", ax=ax1)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
 axplot.set_ylim((0, 17))
 axplot.set_xlabel("")
@@ -3584,13 +3461,9 @@ axplot.legend(handles=legend_rfper_iop1, loc="upper left")
 ax2 = fig.add_subplot(gs[1, 0])
 axplot = hourly_ìop2.plot(kind="bar", color=["w", "k"], edgecolor="k", ax=ax2)
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.grid(axis="x")
 axplot.set_ylim((0, 17))
 axplot.set_xlabel("Local Time")
@@ -3604,15 +3477,115 @@ fig.suptitle("Convective systems initiation time", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_init_iops.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_init_iops.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
 plt.close(fig)
 fig, gs, ax1, ax2, axplot = [None] * 5
 
+print("---- Plotting initiation during the day per IOP init ----")
+
+hourly_iop1 = pd.concat(
+    [
+        pd.DataFrame(index=pd.Index(np.arange(24))),
+        pd.DataFrame(
+            {
+                "init25": (
+                    systems_per_init25_iop1.groupby(
+                        systems_per_init25_iop1.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_per_init25_iop1)
+                    * 100
+                ),
+                "init10": (
+                    systems_per_init10_iop1.groupby(
+                        systems_per_init10_iop1.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_per_init10_iop1)
+                    * 100
+                ),
+            }
+        ),
+    ],
+    axis=1,
+)
+hourly_ìop2 = pd.concat(
+    [
+        pd.DataFrame(index=pd.Index(np.arange(24))),
+        pd.DataFrame(
+            {
+                "init25": (
+                    systems_per_init25_iop2.groupby(
+                        systems_per_init25_iop2.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_per_init25_iop2)
+                    * 100
+                ),
+                "init10": (
+                    systems_per_init10_iop2.groupby(
+                        systems_per_init10_iop2.timestamp.dt.hour
+                    )
+                    .count()
+                    .timestamp
+                    / len(systems_per_init10_iop2)
+                    * 100
+                ),
+            }
+        ),
+    ],
+    axis=1,
+)
+
+fig = plt.figure(figsize=(7, 5))
+gs = fig.add_gridspec(2, 1)
+
+ax1 = fig.add_subplot(gs[0, 0])
+axplot = hourly_iop1.plot(kind="bar", color=["g", "b"], edgecolor="k", ax=ax1)
+# Day/night bars
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
+axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
+axplot.grid(axis="x")
+axplot.set_ylim((0, 20))
+axplot.set_xlabel("")
+axplot.set_xticklabels(labels=time_labels_hour)
+axplot.set_ylabel("Frequency (%)")
+axplot.set_title("IOP1 (Wet Season)")
+axplot.set_title("a", loc="left", fontweight="bold", size=16)
+axplot.legend(handles=legend_rfper_init_iop1, loc="upper left")
+
+ax2 = fig.add_subplot(gs[1, 0])
+axplot = hourly_ìop2.plot(kind="bar", color=["g", "b"], edgecolor="k", ax=ax2)
+# Day/night bars
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
+axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
+axplot.grid(axis="x")
+axplot.set_ylim((0, 20))
+axplot.set_xlabel("Local Time")
+axplot.set_xticklabels(labels=time_labels_hour)
+axplot.set_ylabel("Frequency (%)")
+axplot.set_title("IOP2 (Dry Season)")
+axplot.set_title("b", loc="left", fontweight="bold", size=16)
+axplot.legend(handles=legend_rfper_init_iop2, loc="upper left")
+
+fig.suptitle("Convective systems initiation time", size=14, fontweight="bold")
+
+gs.tight_layout(fig)
+
+plt.savefig(figpath + "exploratory_stats_init_iops_init.png", dpi=300, facecolor="none")
+
+plt.cla()
+plt.clf()
+plt.close(fig)
+fig, gs, ax1, ax2, axplot = [None] * 5
 
 # 12. Clusters, CS, GLD per month
 print("---- Plotting clusters, CS, GLD per month ----")
@@ -3675,14 +3648,10 @@ fig = plt.figure(figsize=(7, 9))
 gs = fig.add_gridspec(3, 1)
 
 ax1 = fig.add_subplot(gs[0, 0])
-axplot = monthlyc.plot(
-    kind="bar", color=["gold", "gray"], edgecolor="k", ax=ax1
-)
+axplot = monthlyc.plot(kind="bar", color=["gold", "gray"], edgecolor="k", ax=ax1)
 axplot.set_ylim((0, 7))
 # Wet/dry season bars
-axplot.axvspan(
-    -0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
-)
+axplot.axvspan(-0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(6.5, 9.5, facecolor="r", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(
     11.5, 14.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
@@ -3714,14 +3683,10 @@ axplot.legend(
 )
 
 ax2 = fig.add_subplot(gs[1, 0])
-axplot = monthlycs.plot(
-    kind="bar", color=["gold", "gray"], edgecolor="k", ax=ax2
-)
+axplot = monthlycs.plot(kind="bar", color=["gold", "gray"], edgecolor="k", ax=ax2)
 axplot.set_ylim((0, 7))
 # Wet/dry season bars
-axplot.axvspan(
-    -0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
-)
+axplot.axvspan(-0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(6.5, 9.5, facecolor="r", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(
     11.5, 14.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
@@ -3759,9 +3724,7 @@ axplot.legend(
 ax3 = fig.add_subplot(gs[2, 0])
 axplot = monthlyg.plot(kind="bar", color=["k"], edgecolor="k", ax=ax3)
 # Wet/dry season bars
-axplot.axvspan(
-    -0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
-)
+axplot.axvspan(-0.5, 2.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(6.5, 9.5, facecolor="r", edgecolor="none", alpha=0.5, zorder=0)
 axplot.axvspan(
     11.5, 14.5, facecolor="dodgerblue", edgecolor="none", alpha=0.5, zorder=0
@@ -3778,9 +3741,7 @@ axplot.grid(axis="x")
 axplot.set_xlabel("")
 axplot.set_xticklabels(labels=time_labels)
 axplot.set_ylabel("Frequency (%)")
-axplot.set_title(
-    "GLD strokes (total = " + str(int(systems_all.gld.sum())) + ")"
-)
+axplot.set_title("GLD strokes (total = " + str(int(systems_all.gld.sum())) + ")")
 axplot.set_title("c", loc="left", fontweight="bold", size=16)
 axplot.legend(
     handles=legend_seasons,
@@ -3798,9 +3759,7 @@ fig.suptitle("Monthly distributions", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_gld_c_monthly.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_gld_c_monthly.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -3869,9 +3828,7 @@ hourly_init = pd.DataFrame(
             * 100
         ),
         "Dry-to-Wet": (
-            systems_per_drytowet.loc[
-                systems_per_drytowet.name.isin(namesdrytowet_gld)
-            ]
+            systems_per_drytowet.loc[systems_per_drytowet.name.isin(namesdrytowet_gld)]
             .groupby(systems_per_drytowet.timestamp.dt.hour)
             .count()
             .timestamp
@@ -3927,13 +3884,9 @@ axplot = hourly_cl.plot(
     legend=False,
 )
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.set_ylim((0, 20))
 axplot.grid(axis="x")
 axplot.set_xlabel("")
@@ -3956,13 +3909,9 @@ axplot = hourly_init.plot(
     legend=False,
 )
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.set_ylim((0, 20))
 axplot.grid(axis="x")
 axplot.set_xlabel("")
@@ -3985,13 +3934,9 @@ axplot = hourly_gld.plot(
     legend=False,
 )
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.set_ylim((0, 20))
 axplot.grid(axis="x")
 axplot.set_xlabel("Local Time")
@@ -4009,9 +3954,7 @@ fig.suptitle("Hourly distribution per Season", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_gld_c_seasons.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_gld_c_seasons.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -4090,9 +4033,7 @@ hourly_init = pd.DataFrame(
             * 100
         ),
         "Dry-to-Wet": (
-            systems_per_drytowet.loc[
-                systems_per_drytowet.name.isin(namesdrytowet_gld)
-            ]
+            systems_per_drytowet.loc[systems_per_drytowet.name.isin(namesdrytowet_gld)]
             .groupby(systems_per_drytowet.timestamp.dt.hour)
             .count()
             .timestamp
@@ -4127,13 +4068,9 @@ axplot = hourly_cl.plot(
     legend=False,
 )
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.set_ylim((0, 23))
 axplot.grid(axis="x")
 axplot.set_xlabel("")
@@ -4156,13 +4093,9 @@ axplot = hourly_init.plot(
     legend=False,
 )
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.set_ylim((0, 23))
 axplot.grid(axis="x")
 axplot.set_xlabel("")
@@ -4246,9 +4179,7 @@ hourly_init = pd.DataFrame(
             .groupby(systems_per_iop1.timestamp.dt.hour)
             .count()
             .timestamp
-            / len(
-                systems_per_iop1.loc[systems_per_iop1.name.isin(namesiop1_gld)]
-            )
+            / len(systems_per_iop1.loc[systems_per_iop1.name.isin(namesiop1_gld)])
             * 100
         ),
         "IOP2 (Dry Season)": (
@@ -4256,9 +4187,7 @@ hourly_init = pd.DataFrame(
             .groupby(systems_per_iop2.timestamp.dt.hour)
             .count()
             .timestamp
-            / len(
-                systems_per_iop2.loc[systems_per_iop2.name.isin(namesiop2_gld)]
-            )
+            / len(systems_per_iop2.loc[systems_per_iop2.name.isin(namesiop2_gld)])
             * 100
         ),
     }
@@ -4267,16 +4196,12 @@ hourly_init = hourly_init.reindex(index=list(hourly_cl.index))
 hourly_gld = pd.DataFrame(
     {
         "IOP1 (Wet Season)": (
-            systems_all_iop1.groupby(systems_all_iop1.timestamp.dt.hour)
-            .sum()
-            .gld
+            systems_all_iop1.groupby(systems_all_iop1.timestamp.dt.hour).sum().gld
             / systems_all_iop1.gld.sum()
             * 100
         ),
         "IOP2 (Dry Season)": (
-            systems_all_iop2.groupby(systems_all_iop2.timestamp.dt.hour)
-            .sum()
-            .gld
+            systems_all_iop2.groupby(systems_all_iop2.timestamp.dt.hour).sum().gld
             / systems_all_iop2.gld.sum()
             * 100
         ),
@@ -4296,13 +4221,9 @@ axplot = hourly_cl.plot(
     legend=False,
 )
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.set_ylim((0, 40))
 axplot.grid(axis="x")
 axplot.set_xlabel("")
@@ -4325,13 +4246,9 @@ axplot = hourly_init.plot(
     legend=False,
 )
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.set_ylim((0, 40))
 axplot.grid(axis="x")
 axplot.set_xlabel("")
@@ -4354,13 +4271,9 @@ axplot = hourly_gld.plot(
     legend=False,
 )
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.set_ylim((0, 40))
 axplot.grid(axis="x")
 axplot.set_xlabel("Local Time")
@@ -4378,9 +4291,7 @@ fig.suptitle("Hourly distribution per IOP", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_gld_c_iops.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_gld_c_iops.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -4440,9 +4351,7 @@ hourly_init = pd.DataFrame(
             .groupby(systems_per_iop1.timestamp.dt.hour)
             .count()
             .timestamp
-            / len(
-                systems_per_iop1.loc[systems_per_iop1.name.isin(namesiop1_gld)]
-            )
+            / len(systems_per_iop1.loc[systems_per_iop1.name.isin(namesiop1_gld)])
             * 100
         ),
         "IOP2 (Dry Season)": (
@@ -4450,9 +4359,7 @@ hourly_init = pd.DataFrame(
             .groupby(systems_per_iop2.timestamp.dt.hour)
             .count()
             .timestamp
-            / len(
-                systems_per_iop2.loc[systems_per_iop2.name.isin(namesiop2_gld)]
-            )
+            / len(systems_per_iop2.loc[systems_per_iop2.name.isin(namesiop2_gld)])
             * 100
         ),
     }
@@ -4472,13 +4379,9 @@ axplot = hourly_cl.plot(
     legend=False,
 )
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.set_ylim((0, 47))
 axplot.grid(axis="x")
 axplot.set_xlabel("")
@@ -4501,13 +4404,9 @@ axplot = hourly_init.plot(
     legend=False,
 )
 # Day/night bars
-axplot.axvspan(
-    -0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(-0.5, 6, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.axvspan(6, 18, facecolor="yellow", edgecolor="none", alpha=0.1, zorder=0)
-axplot.axvspan(
-    18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0
-)
+axplot.axvspan(18, 24, facecolor="midnightblue", edgecolor="none", alpha=0.1, zorder=0)
 axplot.set_ylim((0, 47))
 axplot.grid(axis="x")
 axplot.set_xlabel("")
@@ -4526,9 +4425,7 @@ fig.suptitle("Hourly distribution per IOP", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_nogld_c_iops.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_nogld_c_iops.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -4551,12 +4448,10 @@ plt.close(fig)
 print("---- Plotting CS initiation, propagation per month ----")
 
 # - Treating systems_all as geodataframe, get centroid of each cluster geom
-clusters_geom = gpd.GeoDataFrame(systems_all, geometry="geom").set_crs(
+clusters_geom = gpd.GeoDataFrame(systems_all, geometry="geom").set_crs("EPSG:3395")
+clusters_geom["point"] = clusters_geom.geometry.to_crs("EPSG:3857").centroid.to_crs(
     "EPSG:3395"
 )
-clusters_geom["point"] = clusters_geom.geometry.to_crs(
-    "EPSG:3857"
-).centroid.to_crs("EPSG:3395")
 
 # - Drawing linestring between centroid points in a per CS geodf
 clusters_geomt = clusters_geom.groupby("geom_name").filter(lambda x: len(x) > 1)
@@ -4566,9 +4461,7 @@ linestrs = (
     .rename("path")
 )
 systems_geom = gpd.GeoDataFrame(linestrs, geometry="path").set_crs("EPSG:3395")
-systems_geom["timestamp"] = (
-    clusters_geomt.groupby("geom_name").first().timestamp
-)
+systems_geom["timestamp"] = clusters_geomt.groupby("geom_name").first().timestamp
 
 # - Extracting first and last point from linestrings
 systems_initend = systems_geom.rename(columns={"geom_name": "name"})
@@ -4586,12 +4479,8 @@ systems_initend["x"] = systems_initend.init.x
 systems_initend["y"] = systems_initend.init.y
 systems_initend["dx"] = systems_initend.end.x - systems_initend.init.x
 systems_initend["dy"] = systems_initend.end.y - systems_initend.init.y
-systems_initend["u"] = np.cos(
-    np.arctan2(systems_initend.dy, systems_initend.dx)
-)
-systems_initend["v"] = np.sin(
-    np.arctan2(systems_initend.dy, systems_initend.dx)
-)
+systems_initend["u"] = np.cos(np.arctan2(systems_initend.dy, systems_initend.dx))
+systems_initend["v"] = np.sin(np.arctan2(systems_initend.dy, systems_initend.dx))
 systems_initend["angle"] = (
     np.degrees(np.arctan2(systems_initend.dy, systems_initend.dx)) + 360
 ) % 360
@@ -4772,9 +4661,7 @@ propg = pd.DataFrame(
         )
     }
 ).sort_index()
-propg.rename(
-    index=dict(zip(propg.index.values, propg.index.left)), inplace=True
-)
+propg.rename(index=dict(zip(propg.index.values, propg.index.left)), inplace=True)
 
 fig = plt.figure(figsize=(5, 5))
 gs = fig.add_gridspec(1, 1)
@@ -4914,9 +4801,7 @@ ax1.bar(
     align="center",
 )
 ax1.set_ylim((-2, 34))
-ax1.set_xticks(
-    ticks=np.arange(0, 2 * np.pi, np.radians(22.5)), labels=geolabels
-)
+ax1.set_xticks(ticks=np.arange(0, 2 * np.pi, np.radians(22.5)), labels=geolabels)
 ax1.set_yticks(
     ticks=ax1.get_yticks()[2:-1:2],
     labels=ax1.get_yticklabels()[2:-1:2],
@@ -4926,11 +4811,7 @@ ax1.yaxis.set_major_formatter("{x:,.0f}%")
 ax1.set_title(
     "Dry Season\n(total = "
     + str(
-        len(
-            systems_initend.loc[
-                systems_initend["timestamp"].dt.month.isin([8, 9, 10])
-            ]
-        )
+        len(systems_initend.loc[systems_initend["timestamp"].dt.month.isin([8, 9, 10])])
     )
     + ")"
 )
@@ -4945,9 +4826,7 @@ ax2.bar(
     align="center",
 )
 ax2.set_ylim((-2, 34))
-ax2.set_xticks(
-    ticks=np.arange(0, 2 * np.pi, np.radians(22.5)), labels=geolabels
-)
+ax2.set_xticks(ticks=np.arange(0, 2 * np.pi, np.radians(22.5)), labels=geolabels)
 ax2.set_yticks(
     ticks=ax2.get_yticks()[2:-1:2],
     labels=ax2.get_yticklabels()[2:-1:2],
@@ -4957,11 +4836,7 @@ ax2.yaxis.set_major_formatter("{x:,.0f}%")
 ax2.set_title(
     "Dry-to-Wet Season\n(total = "
     + str(
-        len(
-            systems_initend.loc[
-                systems_initend["timestamp"].dt.month.isin([11, 12])
-            ]
-        )
+        len(systems_initend.loc[systems_initend["timestamp"].dt.month.isin([11, 12])])
     )
     + ")"
 )
@@ -4976,9 +4851,7 @@ ax3.bar(
     align="center",
 )
 ax3.set_ylim((-2, 34))
-ax3.set_xticks(
-    ticks=np.arange(0, 2 * np.pi, np.radians(22.5)), labels=geolabels
-)
+ax3.set_xticks(ticks=np.arange(0, 2 * np.pi, np.radians(22.5)), labels=geolabels)
 ax3.set_yticks(
     ticks=ax3.get_yticks()[2:-1:2],
     labels=ax3.get_yticklabels()[2:-1:2],
@@ -4988,19 +4861,13 @@ ax3.yaxis.set_major_formatter("{x:,.0f}%")
 ax3.set_title(
     "Wet Season\n(total = "
     + str(
-        len(
-            systems_initend.loc[
-                systems_initend["timestamp"].dt.month.isin([1, 2, 3])
-            ]
-        )
+        len(systems_initend.loc[systems_initend["timestamp"].dt.month.isin([1, 2, 3])])
     )
     + ")"
 )
 ax3.set_title("c", loc="left", fontweight="bold", size=16)
 
-fig.suptitle(
-    "Propagation Direction of Convective Systems", size=14, fontweight="bold"
-)
+fig.suptitle("Propagation Direction of Convective Systems", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
@@ -5027,9 +4894,7 @@ ax1.bar(
     align="center",
 )
 ax1.set_ylim((-2, 40))
-ax1.set_xticks(
-    ticks=np.arange(0, 2 * np.pi, np.radians(22.5)), labels=geolabels
-)
+ax1.set_xticks(ticks=np.arange(0, 2 * np.pi, np.radians(22.5)), labels=geolabels)
 ax1.set_yticks(
     ticks=ax1.get_yticks()[2:-1:2],
     labels=ax1.get_yticklabels()[2:-1:2],
@@ -5059,9 +4924,7 @@ ax2.bar(
     align="center",
 )
 ax2.set_ylim((-2, 40))
-ax2.set_xticks(
-    ticks=np.arange(0, 2 * np.pi, np.radians(22.5)), labels=geolabels
-)
+ax2.set_xticks(ticks=np.arange(0, 2 * np.pi, np.radians(22.5)), labels=geolabels)
 ax2.set_yticks(
     ticks=ax2.get_yticks()[2:-1:2],
     labels=ax2.get_yticklabels()[2:-1:2],
@@ -5081,9 +4944,7 @@ ax2.set_title(
 )
 ax2.set_title("b", loc="left", fontweight="bold", size=16)
 
-fig.suptitle(
-    "Propagation Direction of Convective Systems", size=14, fontweight="bold"
-)
+fig.suptitle("Propagation Direction of Convective Systems", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
@@ -5171,9 +5032,7 @@ axplot = detops.plot(
 axplot.grid(axis="x")
 axplot.set_xlabel("km/min")
 axplot.set_ylabel("Frequency (%)")
-axplot.set_xticks(
-    ax2.get_xticks(), np.round(np.arange(-1.1, 1.25, 0.1), 1), rotation=0
-)
+axplot.set_xticks(ax2.get_xticks(), np.round(np.arange(-1.1, 1.25, 0.1), 1), rotation=0)
 axplot.set_title("Convective Systems Max Echo Top Variation Rates")
 axplot.set_title("b", loc="left", fontweight="bold", size=16)
 axplot.legend(ncol=3)
@@ -5395,9 +5254,7 @@ fig.suptitle("Convective Systems Max Echo Tops", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_echotops_iops.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_echotops_iops.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -5449,20 +5306,18 @@ fig, gs, ax1, cbar = [None] * 4
 print("---- Plotting CFAD per season/IOP and differences ----")
 cfad_wet = np.sum([zfreq[i] for i in systems_all_wet.index.to_list()], axis=0)
 cfad_dry = np.sum([zfreq[i] for i in systems_all_dry.index.to_list()], axis=0)
-cfad_drytowet = np.sum(
-    [zfreq[i] for i in systems_all_drytowet.index.to_list()], axis=0
-)
+cfad_drytowet = np.sum([zfreq[i] for i in systems_all_drytowet.index.to_list()], axis=0)
 cfad_iop1 = np.sum([zfreq[i] for i in systems_all_iop1.index.to_list()], axis=0)
 cfad_iop2 = np.sum([zfreq[i] for i in systems_all_iop2.index.to_list()], axis=0)
 cfad_dry_wet = (cfad_dry / cfad_dry.sum(axis=1, keepdims=True) * 100) - (
     cfad_wet / cfad_wet.sum(axis=1, keepdims=True) * 100
 )
-cfad_drytowet_wet = (
-    cfad_drytowet / cfad_drytowet.sum(axis=1, keepdims=True) * 100
-) - (cfad_wet / cfad_wet.sum(axis=1, keepdims=True) * 100)
-cfad_drytowet_dry = (
-    cfad_drytowet / cfad_drytowet.sum(axis=1, keepdims=True) * 100
-) - (cfad_dry / cfad_dry.sum(axis=1, keepdims=True) * 100)
+cfad_drytowet_wet = (cfad_drytowet / cfad_drytowet.sum(axis=1, keepdims=True) * 100) - (
+    cfad_wet / cfad_wet.sum(axis=1, keepdims=True) * 100
+)
+cfad_drytowet_dry = (cfad_drytowet / cfad_drytowet.sum(axis=1, keepdims=True) * 100) - (
+    cfad_dry / cfad_dry.sum(axis=1, keepdims=True) * 100
+)
 cfad_iop1_iop2 = (cfad_iop1 / cfad_iop1.sum(axis=1, keepdims=True) * 100) - (
     cfad_iop2 / cfad_iop2.sum(axis=1, keepdims=True) * 100
 )
@@ -5614,9 +5469,7 @@ fig.suptitle("Clusters CFADs", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_cfad_seasons.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_cfad_seasons.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -5703,9 +5556,7 @@ fig.suptitle("Clusters CFADs", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_cfad_iops.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_cfad_iops.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -5713,155 +5564,151 @@ plt.close(fig)
 fig, gs, ax1, ax2, ax3, cbar = [None] * 6
 
 
-fig = plt.figure(figsize=(5, 10))
-gs = fig.add_gridspec(3, 1)
+# fig = plt.figure(figsize=(5, 10))
+# gs = fig.add_gridspec(3, 1)
 
-ax1 = fig.add_subplot(gs[0, 0])
-plt.contourf(
-    cfad_dry / cfad_dry.sum(axis=1, keepdims=True) * 100,
-    extend="both",
-    levels=np.arange(5, 60, 5),
-    cmap="BuPu",
-    zorder=0,
-)
-ax1.set_xticks(range(0, 16, 2), range(-10, 70, 10))
-ax1.set_yticks(ax1.get_yticks(), range(2, 17, 2))
-ax1.set_ylabel("Height (km)")
-ax1.set_title("Dry Season")
-ax1.set_title("a", loc="left", fontweight="bold", size=16)
-cbar = plt.colorbar()
-cbar.ax.set_ylabel("Frequency (%)")
-plt.contour(
-    cfad_dry / cfad_dry.sum(axis=1, keepdims=True) * 100,
-    extend="both",
-    levels=np.arange(5, 60, 5),
-    colors="k",
-    linewidths=0.5,
-)
+# ax1 = fig.add_subplot(gs[0, 0])
+# plt.contourf(
+#     cfad_dry / cfad_dry.sum(axis=1, keepdims=True) * 100,
+#     extend="both",
+#     levels=np.arange(5, 60, 5),
+#     cmap="BuPu",
+#     zorder=0,
+# )
+# ax1.set_xticks(range(0, 16, 2), range(-10, 70, 10))
+# ax1.set_yticks(ax1.get_yticks(), range(2, 17, 2))
+# ax1.set_ylabel("Height (km)")
+# ax1.set_title("Dry Season")
+# ax1.set_title("a", loc="left", fontweight="bold", size=16)
+# cbar = plt.colorbar()
+# cbar.ax.set_ylabel("Frequency (%)")
+# plt.contour(
+#     cfad_dry / cfad_dry.sum(axis=1, keepdims=True) * 100,
+#     extend="both",
+#     levels=np.arange(5, 60, 5),
+#     colors="k",
+#     linewidths=0.5,
+# )
 
-ax2 = fig.add_subplot(gs[1, 0])
-plt.contourf(
-    cfad_drytowet / cfad_drytowet.sum(axis=1, keepdims=True) * 100,
-    extend="both",
-    levels=np.arange(5, 60, 5),
-    cmap="BuPu",
-    zorder=0,
-)
-ax2.set_xticks(range(0, 16, 2), range(-10, 70, 10))
-ax2.set_yticks(ax2.get_yticks(), range(2, 17, 2))
-ax2.set_ylabel("Height (km)")
-ax2.set_title("Dry-to-Wet Season")
-ax2.set_title("b", loc="left", fontweight="bold", size=16)
-cbar = plt.colorbar()
-cbar.ax.set_ylabel("Frequency (%)")
-plt.contour(
-    cfad_drytowet / cfad_drytowet.sum(axis=1, keepdims=True) * 100,
-    extend="both",
-    levels=np.arange(5, 60, 5),
-    colors="k",
-    linewidths=0.5,
-)
+# ax2 = fig.add_subplot(gs[1, 0])
+# plt.contourf(
+#     cfad_drytowet / cfad_drytowet.sum(axis=1, keepdims=True) * 100,
+#     extend="both",
+#     levels=np.arange(5, 60, 5),
+#     cmap="BuPu",
+#     zorder=0,
+# )
+# ax2.set_xticks(range(0, 16, 2), range(-10, 70, 10))
+# ax2.set_yticks(ax2.get_yticks(), range(2, 17, 2))
+# ax2.set_ylabel("Height (km)")
+# ax2.set_title("Dry-to-Wet Season")
+# ax2.set_title("b", loc="left", fontweight="bold", size=16)
+# cbar = plt.colorbar()
+# cbar.ax.set_ylabel("Frequency (%)")
+# plt.contour(
+#     cfad_drytowet / cfad_drytowet.sum(axis=1, keepdims=True) * 100,
+#     extend="both",
+#     levels=np.arange(5, 60, 5),
+#     colors="k",
+#     linewidths=0.5,
+# )
 
-ax3 = fig.add_subplot(gs[2, 0])
-plt.contourf(
-    cfad_wet / cfad_wet.sum(axis=1, keepdims=True) * 100,
-    extend="both",
-    levels=np.arange(5, 60, 5),
-    cmap="BuPu",
-    zorder=0,
-)
-ax3.set_xticks(range(0, 16, 2), range(-10, 70, 10))
-ax3.set_yticks(ax3.get_yticks(), range(2, 17, 2))
-ax3.set_xlabel("Reflectivity (dBZ)")
-ax3.set_ylabel("Height (km)")
-ax3.set_title("Wet Season")
-ax3.set_title("c", loc="left", fontweight="bold", size=16)
-cbar = plt.colorbar()
-cbar.ax.set_ylabel("Frequency (%)")
-plt.contour(
-    cfad_wet / cfad_wet.sum(axis=1, keepdims=True) * 100,
-    extend="both",
-    levels=np.arange(5, 60, 5),
-    colors="k",
-    linewidths=0.5,
-)
+# ax3 = fig.add_subplot(gs[2, 0])
+# plt.contourf(
+#     cfad_wet / cfad_wet.sum(axis=1, keepdims=True) * 100,
+#     extend="both",
+#     levels=np.arange(5, 60, 5),
+#     cmap="BuPu",
+#     zorder=0,
+# )
+# ax3.set_xticks(range(0, 16, 2), range(-10, 70, 10))
+# ax3.set_yticks(ax3.get_yticks(), range(2, 17, 2))
+# ax3.set_xlabel("Reflectivity (dBZ)")
+# ax3.set_ylabel("Height (km)")
+# ax3.set_title("Wet Season")
+# ax3.set_title("c", loc="left", fontweight="bold", size=16)
+# cbar = plt.colorbar()
+# cbar.ax.set_ylabel("Frequency (%)")
+# plt.contour(
+#     cfad_wet / cfad_wet.sum(axis=1, keepdims=True) * 100,
+#     extend="both",
+#     levels=np.arange(5, 60, 5),
+#     colors="k",
+#     linewidths=0.5,
+# )
 
-fig.suptitle("Clusters CFADs", size=14, fontweight="bold")
+# fig.suptitle("Clusters CFADs", size=14, fontweight="bold")
 
-gs.tight_layout(fig)
+# gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_cfad_seasons.png", dpi=300, facecolor="none"
-)
+# plt.savefig(figpath + "exploratory_stats_cfad_seasons.png", dpi=300, facecolor="none")
 
-plt.cla()
-plt.clf()
-plt.close(fig)
-fig, gs, ax1, ax2, ax3, cbar = [None] * 6
+# plt.cla()
+# plt.clf()
+# plt.close(fig)
+# fig, gs, ax1, ax2, ax3, cbar = [None] * 6
 
 
-fig = plt.figure(figsize=(5, 7))
-gs = fig.add_gridspec(2, 1)
+# fig = plt.figure(figsize=(5, 7))
+# gs = fig.add_gridspec(2, 1)
 
-ax1 = fig.add_subplot(gs[0, 0])
-plt.contourf(
-    cfad_iop1 / cfad_iop1.sum(axis=1, keepdims=True) * 100,
-    extend="both",
-    levels=np.arange(5, 60, 5),
-    cmap="BuPu",
-    zorder=0,
-)
-ax1.set_xticks(range(0, 16, 2), range(-10, 70, 10))
-ax1.set_yticks(ax1.get_yticks(), range(2, 17, 2))
-ax1.set_ylabel("Height (km)")
-ax1.set_title("IOP1 (Wet Season)")
-ax1.set_title("a", loc="left", fontweight="bold", size=16)
-cbar = plt.colorbar()
-cbar.ax.set_ylabel("Frequency (%)")
-plt.contour(
-    cfad_iop1 / cfad_iop1.sum(axis=1, keepdims=True) * 100,
-    extend="both",
-    levels=np.arange(5, 60, 5),
-    colors="k",
-    linewidths=0.5,
-)
+# ax1 = fig.add_subplot(gs[0, 0])
+# plt.contourf(
+#     cfad_iop1 / cfad_iop1.sum(axis=1, keepdims=True) * 100,
+#     extend="both",
+#     levels=np.arange(5, 60, 5),
+#     cmap="BuPu",
+#     zorder=0,
+# )
+# ax1.set_xticks(range(0, 16, 2), range(-10, 70, 10))
+# ax1.set_yticks(ax1.get_yticks(), range(2, 17, 2))
+# ax1.set_ylabel("Height (km)")
+# ax1.set_title("IOP1 (Wet Season)")
+# ax1.set_title("a", loc="left", fontweight="bold", size=16)
+# cbar = plt.colorbar()
+# cbar.ax.set_ylabel("Frequency (%)")
+# plt.contour(
+#     cfad_iop1 / cfad_iop1.sum(axis=1, keepdims=True) * 100,
+#     extend="both",
+#     levels=np.arange(5, 60, 5),
+#     colors="k",
+#     linewidths=0.5,
+# )
 
-ax2 = fig.add_subplot(gs[1, 0])
-plt.contourf(
-    cfad_iop2 / cfad_iop2.sum(axis=1, keepdims=True) * 100,
-    extend="both",
-    levels=np.arange(5, 60, 5),
-    cmap="BuPu",
-    zorder=0,
-)
-ax2.set_xticks(range(0, 16, 2), range(-10, 70, 10))
-ax2.set_yticks(ax2.get_yticks(), range(2, 17, 2))
-ax2.set_ylabel("Height (km)")
-ax2.set_xlabel("Reflectivity (dBZ)")
-ax2.set_title("IOP2 (Dry Season)")
-ax2.set_title("b", loc="left", fontweight="bold", size=16)
-cbar = plt.colorbar()
-cbar.ax.set_ylabel("Frequency (%)")
-plt.contour(
-    cfad_iop2 / cfad_iop2.sum(axis=1, keepdims=True) * 100,
-    extend="both",
-    levels=np.arange(5, 60, 5),
-    colors="k",
-    linewidths=0.5,
-)
+# ax2 = fig.add_subplot(gs[1, 0])
+# plt.contourf(
+#     cfad_iop2 / cfad_iop2.sum(axis=1, keepdims=True) * 100,
+#     extend="both",
+#     levels=np.arange(5, 60, 5),
+#     cmap="BuPu",
+#     zorder=0,
+# )
+# ax2.set_xticks(range(0, 16, 2), range(-10, 70, 10))
+# ax2.set_yticks(ax2.get_yticks(), range(2, 17, 2))
+# ax2.set_ylabel("Height (km)")
+# ax2.set_xlabel("Reflectivity (dBZ)")
+# ax2.set_title("IOP2 (Dry Season)")
+# ax2.set_title("b", loc="left", fontweight="bold", size=16)
+# cbar = plt.colorbar()
+# cbar.ax.set_ylabel("Frequency (%)")
+# plt.contour(
+#     cfad_iop2 / cfad_iop2.sum(axis=1, keepdims=True) * 100,
+#     extend="both",
+#     levels=np.arange(5, 60, 5),
+#     colors="k",
+#     linewidths=0.5,
+# )
 
-fig.suptitle("Clusters CFADs", size=14, fontweight="bold")
+# fig.suptitle("Clusters CFADs", size=14, fontweight="bold")
 
-gs.tight_layout(fig)
+# gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_cfad_iops.png", dpi=300, facecolor="none"
-)
+# plt.savefig(figpath + "exploratory_stats_cfad_iops.png", dpi=300, facecolor="none")
 
-plt.cla()
-plt.clf()
-plt.close(fig)
-fig, gs, ax1, ax2, ax3, cbar = [None] * 6
+# plt.cla()
+# plt.clf()
+# plt.close(fig)
+# fig, gs, ax1, ax2, ax3, cbar = [None] * 6
 
 fig = plt.figure(figsize=(5, 10))
 gs = fig.add_gridspec(3, 1)
@@ -5940,9 +5787,7 @@ fig.suptitle("Clusters CFADs", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_cfad_diffs.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_cfad_diffs.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -5977,9 +5822,7 @@ plt.contour(
 
 gs.tight_layout(fig)
 
-plt.savefig(
-    figpath + "exploratory_stats_cfad_diff_iops.png", dpi=300, facecolor="none"
-)
+plt.savefig(figpath + "exploratory_stats_cfad_diff_iops.png", dpi=300, facecolor="none")
 
 plt.cla()
 plt.clf()
@@ -6059,9 +5902,7 @@ axplot.set_title(
 )
 axplot.set_title("e", loc="left", fontweight="bold", size=16)
 
-fig.suptitle(
-    "Normalized Area Expansion of Clusters", size=14, fontweight="bold"
-)
+fig.suptitle("Normalized Area Expansion of Clusters", size=14, fontweight="bold")
 
 gs.tight_layout(fig)
 
@@ -6075,4 +5916,3 @@ plt.cla()
 plt.clf()
 plt.close(fig)
 fig, gs, ax1, ax2, ax3, ax4, ax5, axplot = [None] * 8
-"""
