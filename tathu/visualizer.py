@@ -18,8 +18,9 @@ from matplotlib.patches import Polygon
 
 from tathu.geometry.utils import extractCoordinates
 
+
 class MapView(object):
-    def __init__(self, extent, references=[], clabel='', timestamp=None):
+    def __init__(self, extent, references=[], clabel="", timestamp=None):
         # Create a new figure
         self.fig = plt.figure()
         # Get parameters
@@ -32,19 +33,25 @@ class MapView(object):
         self.ax.set_extent(self.extent, crs=self.crs)
         # Setup title, if necessary
         if self.timestamp:
-            self.ax.set_title('Systems ' + self.timestamp)
+            self.ax.set_title("Systems " + self.timestamp)
         self.references = references
         self.plotReferences()
 
     def plotReferences(self):
-        self.ax.coastlines(linewidth=0.4, linestyle='solid', color='lightgray')
-        self.ax.add_feature(cfeature.BORDERS, linewidth=0.4, linestyle='solid', color='lightgray')
-        gl = self.ax.gridlines(draw_labels=True, linewidth=0.25, linestyle='--', color='gray')
+        self.ax.coastlines(linewidth=0.4, linestyle="solid", color="lightgray")
+        self.ax.add_feature(
+            cfeature.BORDERS, linewidth=0.4, linestyle="solid", color="lightgray"
+        )
+        gl = self.ax.gridlines(
+            draw_labels=True, linewidth=0.25, linestyle="--", color="gray"
+        )
         gl.top_labels = False
         gl.right_labels = False
         for ref in self.references:
             shp = shpreader.Reader(ref).geometries()
-            self.ax.add_geometries(shp, self.crs, linewidth=0.4, facecolor='none', edgecolor='lightgray')
+            self.ax.add_geometries(
+                shp, self.crs, linewidth=0.4, facecolor="none", edgecolor="lightgray"
+            )
 
     def plotImage(self, image, cmap=None, vmin=None, vmax=None, colorbar=False):
         nodata = image.GetRasterBand(1).GetNoDataValue()
@@ -57,15 +64,38 @@ class MapView(object):
         self.plotArray(array, cmap, vmin, vmax, colorbar)
 
     def plotArray(self, array, cmap=None, vmin=None, vmax=None, colorbar=False):
-        im = self.ax.imshow(array, transform=self.crs, cmap=cmap, vmin=vmin, vmax=vmax, extent=self.extent)
+        im = self.ax.imshow(
+            array,
+            transform=self.crs,
+            cmap=cmap,
+            vmin=vmin,
+            vmax=vmax,
+            extent=self.extent,
+        )
         if colorbar:
-            plt.colorbar(im, orientation='vertical', label=self.clabel)
+            plt.colorbar(im, orientation="vertical", label=self.clabel)
 
-    def plotSystems(self, systems, facecolor='red', alpha=1.0, edgecolor='k', lw=1.0, centroids=False):
+    def plotSystems(
+        self,
+        systems,
+        facecolor="red",
+        alpha=1.0,
+        edgecolor="k",
+        lw=1.0,
+        centroids=False,
+    ):
         polygons = [s.geom for s in systems]
         self.plotPolygons(polygons, facecolor, edgecolor, alpha, lw, centroids)
 
-    def plotPolygons(self, polygons, facecolor='red', edgecolor='k', alpha=1.0, lw=1.0, centroids=False):
+    def plotPolygons(
+        self,
+        polygons,
+        facecolor="red",
+        edgecolor="k",
+        alpha=1.0,
+        lw=1.0,
+        centroids=False,
+    ):
         # Centroid coordinates
         x, y = [], []
         for p in polygons:
@@ -82,7 +112,9 @@ class MapView(object):
             self.__plotPolygon(lats, lons, facecolor, alpha, lw, edgecolor)
 
         # Show centroids
-        self.ax.scatter(x, y, marker='o', facecolor=facecolor, edgecolor=edgecolor, alpha=alpha)
+        self.ax.scatter(
+            x, y, marker="o", facecolor=facecolor, edgecolor=edgecolor, alpha=alpha
+        )
 
     def __plotPolygon(self, lats, lons, facecolor, alpha, lw, edgecolor):
         xy = list(zip(lons, lats))
@@ -91,6 +123,7 @@ class MapView(object):
 
     def show(self):
         plt.show()
+
 
 class SystemHistoryView:
     def __init__(self, family, images=None, extent=None, highlightEvent=True):
@@ -108,18 +141,17 @@ class SystemHistoryView:
 
         # Colors for system event
         self.colors = {
-            'SPONTANEOUS_GENERATION': 'green',
-            'MERGE': 'blue',
-            'SPLIT': 'yellow',
-            'CONTINUITY': 'red'
+            "SPONTANEOUS_GENERATION": "green",
+            "MERGE": "blue",
+            "SPLIT": "yellow",
+            "CONTINUITY": "red",
         }
 
         # Flag that indicates if plot will highlight system events
         self.highlightEvent = highlightEvent
 
         # Adjust for cartopy format
-        self.extent = [self.extent[0], self.extent[2],
-            self.extent[1], self.extent[3]]
+        self.extent = [self.extent[0], self.extent[2], self.extent[1], self.extent[3]]
 
         # Create a new figure
         self.fig = plt.figure()
@@ -143,8 +175,13 @@ class SystemHistoryView:
             patchList.append(data_key)
 
         if self.highlightEvent:
-            self.fig.legend(handles=patchList, loc='lower right',
-                ncol=4, bbox_transform=self.fig.transFigure, borderaxespad=0)
+            self.fig.legend(
+                handles=patchList,
+                loc="lower right",
+                ncol=4,
+                bbox_transform=self.fig.transFigure,
+                borderaxespad=0,
+            )
 
     def show(self):
         plt.show()
@@ -155,7 +192,7 @@ class SystemHistoryView:
         n = len(self.family.systems)
         nlines = int(n / ncols + 1)
         # Define size of figure according to ncols/nlines
-        plt.gcf().set_size_inches(ncols*2, nlines*2, forward=True)
+        plt.gcf().set_size_inches(ncols * 2, nlines * 2, forward=True)
 
         # Create individual plots
         i = 0
@@ -180,6 +217,8 @@ class SystemHistoryView:
         for s in self.family.systems:
             self.__plotReferences(self.axes[i])
 
+            img_extent = [s.getMBR()[0], s.getMBR()[2], s.getMBR()[1], s.getMBR()[3]]
+
             if self.images is not None:
                 if self.images[i] is not None:
                     if isinstance(self.images[i], np.ndarray):
@@ -187,25 +226,27 @@ class SystemHistoryView:
                     else:
                         image = self.images[i].ReadAsArray()
 
-                    self.axes[i].imshow(image, transform=self.crs, extent=self.extent)
+                    self.axes[i].imshow(image, transform=self.crs, extent=img_extent)
 
             # Extract lat/lon
             lats, lons = extractCoordinates(s.geom)
 
             # Plot polygon
-            self.__plotPolygon(lats, lons, 'none', 1.0, 1.0, 'k', self.axes[i])
+            self.__plotPolygon(lats, lons, "none", 1.0, 1.0, "k", self.axes[i])
 
             # Extract lat/lon
             lats, lons = extractCoordinates(s.geom.ConvexHull())
 
             # Plot polygon
-            color = 'red'
+            color = "red"
             if self.highlightEvent:
                 color = self.colors[s.event]
-            self.__plotPolygon(lats, lons, 'none', 1.0, 1.0, color, self.axes[i])
+            self.__plotPolygon(lats, lons, "none", 1.0, 1.0, color, self.axes[i])
 
             if s.timestamp:
-                self.axes[i].set_title(s.timestamp.strftime('%H:%M') + ' UTC', fontsize=10, va='center')
+                self.axes[i].set_title(
+                    s.timestamp.strftime("%H:%M") + " UTC", fontsize=10, va="center"
+                )
 
             i += 1
 
@@ -218,9 +259,11 @@ class SystemHistoryView:
         plt.gca().add_patch(poly)
 
     def __plotReferences(self, ax):
-        ax.coastlines(linewidth=0.4, linestyle='solid', color='white')
-        ax.add_feature(cfeature.BORDERS, linewidth=0.4, linestyle='solid', color='white')
-        gl = ax.gridlines(draw_labels=True, linewidth=0.25, linestyle='--', color='k')
+        ax.coastlines(linewidth=0.4, linestyle="solid", color="white")
+        ax.add_feature(
+            cfeature.BORDERS, linewidth=0.4, linestyle="solid", color="white"
+        )
+        gl = ax.gridlines(draw_labels=True, linewidth=0.25, linestyle="--", color="k")
         gl.top_labels = False
         gl.right_labels = False
 
@@ -235,11 +278,10 @@ class AnimationMap(animation.TimedAnimation):
         for name in attributes:
             self.timeseries.append(family.getAttribute(name))
 
-        fig = plt.figure()
+        fig = plt.figure(figsize=(12, 7))
 
         # Adjust for cartopy format
-        self.extent = [self.extent[0], self.extent[2],
-            self.extent[1], self.extent[3]]
+        self.extent = [self.extent[0], self.extent[2], self.extent[1], self.extent[3]]
 
         # SRS
         self.crs = ccrs.PlateCarree()
@@ -255,12 +297,16 @@ class AnimationMap(animation.TimedAnimation):
         self.map.set_extent(self.extent, crs=self.crs)
 
         # Draw grids
-        gl = self.map.gridlines(draw_labels=True, linewidth=0.25, linestyle='--', color='k')
+        gl = self.map.gridlines(
+            draw_labels=True, linewidth=0.25, linestyle="--", color="k"
+        )
         gl.top_labels = False
         gl.right_labels = False
 
         # Create polygon graphic
-        self.poly = Polygon([[0, 0], [0,0]], facecolor='none', edgecolor='red', alpha=1.0, lw=1.0)
+        self.poly = Polygon(
+            [[0, 0], [0, 0]], facecolor="none", edgecolor="red", alpha=1.0, lw=1.0
+        )
         self.map.add_patch(self.poly)
 
         # Create axis for timeseries (multi-scale using twinx)
@@ -270,7 +316,7 @@ class AnimationMap(animation.TimedAnimation):
             self.tsAxes[i].set_xticklabels([])
 
         # Get color for each timeseries
-        cmap = self.__getColorMap(len(attributes), 'Dark2')
+        cmap = self.__getColorMap(len(attributes), "Dark2")
 
         # Create line for each timeseries
         self.x = []
@@ -278,7 +324,7 @@ class AnimationMap(animation.TimedAnimation):
 
         for i in range(0, len(attributes)):
             self.x.append(np.arange(len(self.timeseries[i])))
-            line = Line2D([], [], color=cmap(i), marker='o', label=attributes[i])
+            line = Line2D([], [], color=cmap(i), marker="o", label=attributes[i])
             self.lines.append(line)
             self.tsAxes[i].add_line(line)
             self.tsAxes[i].set_xlim(0, len(self.timeseries[i]))
@@ -286,10 +332,10 @@ class AnimationMap(animation.TimedAnimation):
 
         # Add legend
         labs = [l.get_label() for l in self.lines]
-        self.tsAxes[0].legend(self.lines, labs, loc='upper right')
+        self.tsAxes[0].legend(self.lines, labs, loc="upper right")
 
         # Extract hour minute
-        hourmin = [t.strftime('%H:%M') for t in self.timestamps]
+        hourmin = [t.strftime("%H:%M") for t in self.timestamps]
 
         # Show timestamp information
         axes[2].set_xticks(self.x[0])
@@ -300,7 +346,9 @@ class AnimationMap(animation.TimedAnimation):
         axes[1].get_yaxis().set_visible(False)
         axes[1].set_facecolor((0, 0, 0))
 
-        animation.TimedAnimation.__init__(self, fig, interval=200, blit=False, repeat_delay=2000)
+        animation.TimedAnimation.__init__(
+            self, fig, interval=200, blit=False, repeat_delay=2000
+        )
 
     def show(self):
         plt.show()
@@ -323,7 +371,7 @@ class AnimationMap(animation.TimedAnimation):
 
         # Animate lines
         for k in range(0, len(self.lines)):
-            self.lines[k].set_data(self.x[k][0:i+1], self.timeseries[k][0:i+1])
+            self.lines[k].set_data(self.x[k][0 : i + 1], self.timeseries[k][0 : i + 1])
             toDraw.append(self.lines[k])
 
         self._drawn_artists = toDraw
@@ -334,13 +382,14 @@ class AnimationMap(animation.TimedAnimation):
     def _init_draw(self):
         pass
 
-    def __getColorMap(self, n, name='hsv'):
-        '''Returns a function that maps each index in 0, 1, ..., n-1 to a distinct
-        RGB color; the keyword argument name must be a standard mpl colormap name.'''
+    def __getColorMap(self, n, name="hsv"):
+        """Returns a function that maps each index in 0, 1, ..., n-1 to a distinct
+        RGB color; the keyword argument name must be a standard mpl colormap name."""
         return plt.cm.get_cmap(name, n)
 
+
 class AnimationMapDatabase(animation.TimedAnimation):
-    def __init__(self, db, extent, images, timestamps, cmap='Greys'):
+    def __init__(self, db, extent, images, timestamps, cmap="Greys"):
         self.db = db
         self.extent = extent
         self.images = images
@@ -350,8 +399,7 @@ class AnimationMapDatabase(animation.TimedAnimation):
         fig = plt.figure()
 
         # Adjust for cartopy format
-        self.extent = [self.extent[0], self.extent[2],
-            self.extent[1], self.extent[3]]
+        self.extent = [self.extent[0], self.extent[2], self.extent[1], self.extent[3]]
 
         # SRS
         self.crs = ccrs.PlateCarree()
@@ -361,18 +409,24 @@ class AnimationMapDatabase(animation.TimedAnimation):
         self.map.set_extent(self.extent, crs=self.crs)
 
         # Draw grids
-        gl = self.map.gridlines(draw_labels=True, linewidth=0.25, linestyle='--', color='k')
+        gl = self.map.gridlines(
+            draw_labels=True, linewidth=0.25, linestyle="--", color="k"
+        )
         gl.top_labels = False
         gl.right_labels = False
 
-        self.array = self.map.imshow(self.__getArray(self.images[0]),
-            transform=self.crs, cmap=self.cmap, extent=self.extent)
+        self.array = self.map.imshow(
+            self.__getArray(self.images[0]),
+            transform=self.crs,
+            cmap=self.cmap,
+            extent=self.extent,
+        )
 
         self.colors = {
-            'SPONTANEOUS_GENERATION': 'green',
-            'MERGE': 'blue',
-            'SPLIT': 'yellow',
-            'CONTINUITY': 'red'
+            "SPONTANEOUS_GENERATION": "green",
+            "MERGE": "blue",
+            "SPLIT": "yellow",
+            "CONTINUITY": "red",
         }
 
         # Add legend
@@ -381,16 +435,20 @@ class AnimationMapDatabase(animation.TimedAnimation):
             data_key = mpatches.Patch(color=self.colors[key], label=key)
             patchList.append(data_key)
 
-        plt.legend(handles=patchList, loc='upper right')
+        plt.legend(handles=patchList, loc="upper right")
 
         # Add title
         self.map.set_title(self.timestamps[0].strftime("%Y-%m-%d %H:%M:%S UTC"))
 
         # Plot references
-        self.map.coastlines(linewidth=0.4, linestyle='solid', color='black')
-        self.map.add_feature(cfeature.BORDERS, linewidth=0.4, linestyle='solid', color='black')
+        self.map.coastlines(linewidth=0.4, linestyle="solid", color="black")
+        self.map.add_feature(
+            cfeature.BORDERS, linewidth=0.4, linestyle="solid", color="black"
+        )
 
-        animation.TimedAnimation.__init__(self, fig, interval=500, blit=False, repeat_delay=2000)
+        animation.TimedAnimation.__init__(
+            self, fig, interval=500, blit=False, repeat_delay=2000
+        )
 
     def show(self):
         plt.show()
@@ -409,14 +467,22 @@ class AnimationMapDatabase(animation.TimedAnimation):
         self.map.set_title(self.timestamps[i].strftime("%Y-%m-%d %H:%M:%S UTC"))
 
         # Load systems
-        systems = self.db.loadByDate('%Y%m%d%H%M', self.timestamps[i].strftime('%Y%m%d%H%M'), attrs=['nae'])
+        systems = self.db.loadByDate(
+            "%Y%m%d%H%M", self.timestamps[i].strftime("%Y%m%d%H%M"), attrs=["nae"]
+        )
 
         # Create polygon graphic
         for s in systems:
             lats, lons = extractCoordinates(s.geom)
             xy = list(zip(lons, lats))
-            poly = Polygon(xy, facecolor='none', edgecolor=self.colors[s.event],
-                alpha=1.0, lw=1.0, label=s.event)
+            poly = Polygon(
+                xy,
+                facecolor="none",
+                edgecolor=self.colors[s.event],
+                alpha=1.0,
+                lw=1.0,
+                label=s.event,
+            )
             self.map.add_patch(poly)
 
     def new_frame_seq(self):
@@ -429,4 +495,3 @@ class AnimationMapDatabase(animation.TimedAnimation):
         if isinstance(image, np.ndarray):
             return image
         return image.ReadAsArray()
-

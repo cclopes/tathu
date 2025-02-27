@@ -1424,7 +1424,7 @@ legend_pmap = [
 print(systems_per_init25.describe())
 # print(systems_per_init25['duration'].quantile(q=0.1))
 
-
+"""
 # 1. Area
 print("---- Plotting area ----")
 fig = plt.figure(figsize=(7, 5))
@@ -1835,10 +1835,10 @@ print("---- Plotting duration ----")
 durs = pd.DataFrame(
     {
         "Raw": systems_per_full.groupby(
-            [pd.cut(systems_per_full.duration, [0, 1, 2, 3, 4, 5, 6, 24])]
+            [pd.cut(systems_per_full.duration, [-1, 1, 2, 3, 4, 5, 6, 24])]
         ).size(),
         "Filtered": systems_per.groupby(
-            [pd.cut(systems_per.duration, [0, 1, 2, 3, 4, 5, 6, 24])]
+            [pd.cut(systems_per.duration, [-1, 1, 2, 3, 4, 5, 6, 24])]
         ).size(),
     }
 ).append(
@@ -1908,10 +1908,10 @@ print("---- Plotting duration init ----")
 durs = pd.DataFrame(
     {
         "Initiation within 25km": systems_per_init25.groupby(
-            [pd.cut(systems_per_init25.duration, [0, 1, 2, 3, 4, 5, 6, 24])]
+            [pd.cut(systems_per_init25.duration, [-1, 1, 2, 3, 4, 5, 6, 24])]
         ).size(),
         "Initiation within 10km": systems_per_init10.groupby(
-            [pd.cut(systems_per_init10.duration, [0, 1, 2, 3, 4, 5, 6, 24])]
+            [pd.cut(systems_per_init10.duration, [-1, 1, 2, 3, 4, 5, 6, 24])]
         ).size(),
     }
 ).append(
@@ -2266,10 +2266,10 @@ hourly_dry = pd.DataFrame(
 hourly_drytowet = pd.DataFrame(
     {
         "Raw": systems_per_full_drytowet.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
         "Filtered": systems_per_drytowet.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
     }
 ).append(
@@ -2356,10 +2356,10 @@ print("---- Plotting duration per season init ----")
 hourly_wet = pd.DataFrame(
     {
         "Initiation within 25km": systems_per_init25_wet.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
         "Initiation within 10km": systems_per_init10_wet.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
     }
 ).append(
@@ -2372,10 +2372,10 @@ hourly_wet = pd.DataFrame(
 hourly_dry = pd.DataFrame(
     {
         "Initiation within 25km": systems_per_init25_dry.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
         "Initiation within 10km": systems_per_init10_dry.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
     }
 ).append(
@@ -2388,10 +2388,10 @@ hourly_dry = pd.DataFrame(
 hourly_drytowet = pd.DataFrame(
     {
         "Initiation within 25km": systems_per_init25_drytowet.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
         "Initiation within 10km": systems_per_init10_drytowet.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
     }
 ).append(
@@ -2482,10 +2482,10 @@ print("---- Plotting duration per IOPs ----")
 hourly_iop1 = pd.DataFrame(
     {
         "Raw": systems_per_full_iop1.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
         "Filtered": systems_per_iop1.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
     }
 ).append(
@@ -2498,10 +2498,10 @@ hourly_iop1 = pd.DataFrame(
 hourly_iop2 = pd.DataFrame(
     {
         "Raw": systems_per_full_iop2.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
         "Filtered": systems_per_iop2.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
     }
 ).append(
@@ -2588,10 +2588,10 @@ print("---- Plotting duration per IOPs init ----")
 hourly_iop1 = pd.DataFrame(
     {
         "Initiation within 25km": systems_per_init25_iop1.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
         "Initiation within 10km": systems_per_init10_iop1.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
     }
 ).append(
@@ -2604,10 +2604,10 @@ hourly_iop1 = pd.DataFrame(
 hourly_iop2 = pd.DataFrame(
     {
         "Initiation within 25km": systems_per_init25_iop2.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
         "Initiation within 10km": systems_per_init10_iop2.duration.value_counts(
-            bins=[0, 1, 2, 3, 4, 5, 6, 24]
+            bins=[-1, 1, 2, 3, 4, 5, 6, 24]
         ),
     }
 ).append(
@@ -4443,7 +4443,7 @@ plt.close(fig)
     axplot,
 ) = [None] * 10
 
-
+"""
 # 14. CS initiation, propagation per month
 print("---- Plotting CS initiation, propagation per month ----")
 
@@ -4479,10 +4479,15 @@ systems_initend["x"] = systems_initend.init.x
 systems_initend["y"] = systems_initend.init.y
 systems_initend["dx"] = systems_initend.end.x - systems_initend.init.x
 systems_initend["dy"] = systems_initend.end.y - systems_initend.init.y
+systems_initend["dx_inv"] = systems_initend.init.x - systems_initend.end.x
+systems_initend["dy_inv"] = systems_initend.init.y - systems_initend.end.y
 systems_initend["u"] = np.cos(np.arctan2(systems_initend.dy, systems_initend.dx))
 systems_initend["v"] = np.sin(np.arctan2(systems_initend.dy, systems_initend.dx))
 systems_initend["angle"] = (
     np.degrees(np.arctan2(systems_initend.dy, systems_initend.dx)) + 360
+) % 360
+systems_initend["angle_windrose"] = (
+    np.degrees(np.arctan2(systems_initend.dy_inv, systems_initend.dx_inv)) + 360
 ) % 360
 systems_initend["distance"] = (
     (systems_initend.dx) ** 2 + (systems_initend.dy) ** 2
@@ -4654,7 +4659,7 @@ print("---- Plotting CS propagation: all, per season, IOPs ----")
 propg = pd.DataFrame(
     {
         "angle_freq": (
-            np.radians(systems_initend.angle).value_counts(
+            np.radians(systems_initend.angle_windrose).value_counts(
                 bins=np.arange(0, 2.1 * np.pi, np.radians(22.5)), normalize=True
             )
             * 100
@@ -4682,6 +4687,7 @@ ax.set_yticks(
     ha="center",
 )
 ax.yaxis.set_major_formatter("{x:,.0f}%")
+ax.set_rlabel_position(135)
 ax.set_title("Propagation Direction of Convective Systems", fontweight="bold")
 
 gs.tight_layout(fig)
@@ -4703,7 +4709,7 @@ propg_dry = pd.DataFrame(
             np.radians(
                 systems_initend.loc[
                     systems_initend["timestamp"].dt.month.isin([8, 9, 10])
-                ].angle
+                ].angle_windrose
             ).value_counts(
                 bins=np.arange(0, 2.1 * np.pi, np.radians(22.5)), normalize=True
             )
@@ -4720,7 +4726,7 @@ propg_drytowet = pd.DataFrame(
             np.radians(
                 systems_initend.loc[
                     systems_initend["timestamp"].dt.month.isin([11, 12])
-                ].angle
+                ].angle_windrose
             ).value_counts(
                 bins=np.arange(0, 2.1 * np.pi, np.radians(22.5)), normalize=True
             )
@@ -4738,7 +4744,7 @@ propg_wet = pd.DataFrame(
             np.radians(
                 systems_initend.loc[
                     systems_initend["timestamp"].dt.month.isin([1, 2, 3])
-                ].angle
+                ].angle_windrose
             ).value_counts(
                 bins=np.arange(0, 2.1 * np.pi, np.radians(22.5)), normalize=True
             )
@@ -4756,7 +4762,7 @@ propg_iop1 = pd.DataFrame(
                 systems_initend.loc[
                     (systems_initend["timestamp"].dt.month.isin([2, 3]))
                     & (systems_initend["timestamp"].dt.year == 2014)
-                ].angle
+                ].angle_windrose
             ).value_counts(
                 bins=np.arange(0, 2.1 * np.pi, np.radians(22.5)), normalize=True
             )
@@ -4775,7 +4781,7 @@ propg_iop2 = pd.DataFrame(
                 systems_initend.set_index(["timestamp"])
                 .loc["2014-8-15":"2014-10-15"]
                 .reset_index()
-                .angle
+                .angle_windrose
             ).value_counts(
                 bins=np.arange(0, 2.1 * np.pi, np.radians(22.5)), normalize=True
             )
@@ -4808,6 +4814,7 @@ ax1.set_yticks(
     ha="center",
 )
 ax1.yaxis.set_major_formatter("{x:,.0f}%")
+ax1.set_rlabel_position(135)
 ax1.set_title(
     "Dry Season\n(total = "
     + str(
@@ -4833,6 +4840,7 @@ ax2.set_yticks(
     ha="center",
 )
 ax2.yaxis.set_major_formatter("{x:,.0f}%")
+ax2.set_rlabel_position(135)
 ax2.set_title(
     "Dry-to-Wet Season\n(total = "
     + str(
@@ -4858,6 +4866,7 @@ ax3.set_yticks(
     ha="center",
 )
 ax3.yaxis.set_major_formatter("{x:,.0f}%")
+ax3.set_rlabel_position(135)
 ax3.set_title(
     "Wet Season\n(total = "
     + str(
@@ -4901,6 +4910,7 @@ ax1.set_yticks(
     ha="center",
 )
 ax1.yaxis.set_major_formatter("{x:,.0f}%")
+ax1.set_rlabel_position(135)
 ax1.set_title(
     "IOP1 (Wet Season)\n(total = "
     + str(
@@ -4931,6 +4941,7 @@ ax2.set_yticks(
     ha="center",
 )
 ax2.yaxis.set_major_formatter("{x:,.0f}%")
+ax2.set_rlabel_position(135)
 ax2.set_title(
     "IOP2 (Dry Season)\n(total = "
     + str(
@@ -4959,7 +4970,7 @@ plt.clf()
 plt.close(fig)
 fig, gs, ax1, ax2 = [None] * 4
 
-
+"""
 # 16. Echo tops
 print("---- Plotting echotops ----")
 tops = pd.DataFrame(
@@ -5916,3 +5927,4 @@ plt.cla()
 plt.clf()
 plt.close(fig)
 fig, gs, ax1, ax2, ax3, ax4, ax5, axplot = [None] * 8
+"""
